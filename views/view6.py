@@ -2,10 +2,7 @@ import flet as ft
 
 class Tab1(ft.Tab):
     def __init__(self):
-        super().__init__()
-        self.text="Inicio"
-        self.icon=ft.icons.RESTART_ALT
-        
+        super().__init__()        
         self.stateServiceText = ft.Text("Activo",color=ft.colors.LIGHT_GREEN_ACCENT_400)
         self.initDropDown = ft.Dropdown( width=300,
                             options=[
@@ -16,6 +13,9 @@ class Tab1(ft.Tab):
                             hint_text="Elige una opcion")
         self.firewallCheckbox = ft.Checkbox(label="Puerto abierto en el cortafuegos",on_change = self.activateFirewallDetailsBtn)
         self.firewallDetailsBtn = ft.OutlinedButton(text="Detalles del cortafuegos...", disabled = True)
+
+        self.text="Inicio"
+        self.icon=ft.icons.RESTART_ALT
         self.content = ft.Column(
                   controls = [ft.Row(
                             controls = 

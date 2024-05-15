@@ -1,9 +1,11 @@
 import flet as ft
 
-tab3 = ft.Tab(
-                text="Identidad",
-                icon=ft.icons.PERM_IDENTITY,    
-                content= ft.Column(
+class Tab3(ft.Tab):
+    def __init__(self):
+        super().__init__()
+        self.text="Identidad"
+        self.icon=ft.icons.PERM_IDENTITY   
+        self.content= ft.Column(
                   controls = [    
                         ft.Row(
                             controls = 
@@ -78,4 +80,3 @@ tab3 = ft.Tab(
                         )
                    ]
                 )
-        )

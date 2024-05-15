@@ -1,9 +1,11 @@
 import flet as ft
 
-tab2 = ft.Tab(
-                text ="Compartidos",
-                icon = ft.icons.FOLDER_SHARED,
-                content=ft.Column(
+class Tab2(ft.Tab):
+    def __init__(self):
+        super().__init__()
+        self.text ="Compartidos"
+        self.icon = ft.icons.FOLDER_SHARED
+        self.content=ft.Column(
                     controls=[
                         ft.Row(
                             controls = [ft.Text("Recursos compartidos disponibles:"),
@@ -103,4 +105,3 @@ tab2 = ft.Tab(
                         ),                 
                      ]
                 )
-            )

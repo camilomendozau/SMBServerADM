@@ -1,6 +1,6 @@
 # A smbserveradm Flet app
 
-An example of a counter Flet app.
+An example of a minimal Flet app.
 
 To run the app:
 

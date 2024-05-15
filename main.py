@@ -1,58 +1,48 @@
 import flet as ft
+from views.view1 import Tab1
+from views.view2 import Tab2
+from views.view3 import Tab3
+# from views.view4 import tab4
+# from views.view5 import tab5
+# from views.view6 import SharedTab
 
+
+# def main(page: ft.Page):
+#     page.title = "Panel de Control SAMBA SERVER"
+#     page.vertical_alignment = ft.MainAxisAlignment.CENTER
+#     tab1 = SharedTab(page)
+
+
+#     tabsToRender = ft.Tabs(
+#         selected_index=0,
+#         animation_duration=300,
+#         tabs=[tab1.build()],
+#         expand=1,
+#     )
+
+#     page.add(tabsToRender)
+#     page.add(ft.Row(
+#                     controls=[
+#                         ft.ElevatedButton("Cancelar",bgcolor=ft.colors.RED_800,disabled=True,icon=ft.icons.CANCEL),
+#                         ft.ElevatedButton("Guardar cambios",bgcolor=ft.colors.GREEN_800,disabled=True,icon=ft.icons.SAVE)
+#                     ],
+#                     alignment=ft.MainAxisAlignment.END,
+#                     vertical_alignment = ft.CrossAxisAlignment.END
+#                 )
+#             )
+
+# ft.app(target=main)
 
 def main(page: ft.Page):
-    page.title = "Panel de Control SAMBA SERVER"
-    page.vertical_alignment = ft.MainAxisAlignment.CENTER
-
-
-    txt_number = ft.TextField(value="0", text_align=ft.TextAlign.RIGHT, width=100)
-
-    def minus_click(e):
-        txt_number.value = str(int(txt_number.value) - 1)
-        page.update()
-
-    def plus_click(e):
-        txt_number.value = str(int(txt_number.value) + 1)
-        page.update()
-
-    t = ft.Tabs(
-        selected_index=1,
+    tabsToRender = ft.Tabs(
+        selected_index=0,
         animation_duration=300,
-        tabs=[
-            ft.Tab(
-                text="Permisos",
-                content=ft.Row(
-                                [
-                                    ft.Checkbox(label="Read"),
-                                    ft.Checkbox(label="Write"),
-                                    ft.Checkbox(label="Execute")
-                                ],
-                                alignment=ft.MainAxisAlignment.CENTER,
-                            )
-            ),
-            ft.Tab(
-                tab_content=ft.Icon(ft.icons.SEARCH),
-                content=ft.Text("This is Tab 2"),
-            ),
-            ft.Tab(
-                text="Configuraciones",
-                icon=ft.icons.SETTINGS,
-                content=ft.Text("This is Tab 3",color=ft.colors.BLUE_50)
-            ),
-        ],
+        tabs=[Tab1(),Tab2(),Tab3()],
         expand=1,
     )
-    page.add(t)
     page.add(
-        ft.Row(
-            [
-                ft.IconButton(ft.icons.REMOVE, on_click=minus_click),
-                txt_number,
-                ft.IconButton(ft.icons.ADD, on_click=plus_click)
-            ],
-            alignment=ft.MainAxisAlignment.CENTER,
-        )
+        tabsToRender
     )
+
 
 ft.app(target=main)

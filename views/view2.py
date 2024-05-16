@@ -3,6 +3,11 @@ import flet as ft
 class Tab2(ft.Tab):
     def __init__(self):
         super().__init__()
+        self.addBtn = ft.OutlinedButton(text="Añadir...", icon = ft.icons.ADD)
+        self.editBtn = ft.OutlinedButton(text="Editar...", disabled=True, icon = ft.icons.EDIT_ROUNDED)
+        self.deleteBtn = ft.OutlinedButton(text="Suprimir", disabled=True, icon = ft.icons.DELETE)
+        self.rowsSelected = 0
+
         self.text ="Compartidos"
         self.icon = ft.icons.FOLDER_SHARED
         self.content=ft.Column(
@@ -28,8 +33,8 @@ class Tab2(ft.Tab):
                                         sort_column_index=2,
                                         sort_ascending=True,
                                         heading_row_color=ft.colors.BLACK12,
-                                        data_row_color={"hovered": "0x30FF0000"},
                                         show_checkbox_column=True,
+                                        data_row_color={"hovered": "0x30FF0000"},
                                         divider_thickness=0,
                                         columns=[
                                             ft.DataColumn(ft.Text("Estado"),tooltip="Estado del recurso"),
@@ -49,7 +54,7 @@ class Tab2(ft.Tab):
                                                     ft.DataCell(ft.Text("No")),
                                                     ft.DataCell(ft.Text("Printer Drivers"))
                                                 ],
-                                                on_select_changed=self.onSelectItem
+                                                on_select_changed= self.unableBtnsControls
                                             ),
                                             ft.DataRow(
                                                 cells=[
@@ -60,7 +65,7 @@ class Tab2(ft.Tab):
                                                     ft.DataCell(ft.Text("No")),
                                                     ft.DataCell(ft.Text("Printer Drivers"))
                                                 ],
-                                                on_select_changed=self.onSelectItem
+                                                on_select_changed= self.unableBtnsControls
                                             ),
                                             ft.DataRow(
                                                 cells=[
@@ -69,9 +74,9 @@ class Tab2(ft.Tab):
                                                     ft.DataCell(ft.Text("Compartidos")),
                                                     ft.DataCell(ft.Text("/var/lib/samba/drivers")),
                                                     ft.DataCell(ft.Text("No")),
-                                                    ft.DataCell(ft.Text("Printer Drivers"))
+                                                    ft.DataCell(ft.Text("Printer Drivers")),
                                                 ],
-                                                on_select_changed=self.onSelectItem
+                                                on_select_changed= self.unableBtnsControls
                                             ),
                                         ]
                                     
@@ -80,23 +85,8 @@ class Tab2(ft.Tab):
                             alignment=ft.MainAxisAlignment.CENTER, 
                         ),    
                         ft.Row(
-                            controls = [
-                                ft.Row(
-                                    controls = [
-                                        ft.OutlinedButton(text="Añadir..."),
-                                        ft.OutlinedButton(text="Editar..."),
-                                        ft.OutlinedButton(text="Suprimir")
-                                    ]
-                                ),
-                                ft.Row(
-                                    controls = [
-                                        ft.OutlinedButton(text="Renombrar..."),
-                                        ft.OutlinedButton(text="Acceso de invitado"),
-                                        ft.OutlinedButton(text="Cambiar estado")
-                                    ]
-                                )
-                            ],
-                            alignment=ft.MainAxisAlignment.SPACE_BETWEEN 
+                            controls = [self.addBtn,self.editBtn,self.deleteBtn],
+                            alignment=ft.MainAxisAlignment.START
                         ),
                         ft.Card(
                             content=ft.Container(
@@ -113,10 +103,61 @@ class Tab2(ft.Tab):
                                 ),
                                 padding=20
                             )
-                        )               
-                     ]
-                )
-        
-    def onSelectItem(self, e:ft.TapEvent):
-        print(e.target)
+                        ) 
+                    ], )  
+            
+    def unableBtnsControls(self,e):
+        if not e.control.selected:
+            if self.rowsSelected == 0:
+                self.rowsSelected = self.rowsSelected + 1
+                print(e.control.cells[2].content.value,self.rowsSelected, sep='|')
+                e.control.selected = True
+                self.addBtn.disabled = True                    
+                self.editBtn.disabled = False
+                self.deleteBtn.disabled = False
+                self.update()
+            elif self.rowsSelected == 1:  
+                self.rowsSelected = self.rowsSelected + 1
+                print(e.control.cells[2].content.value,self.rowsSelected, sep='|')         
+                e.control.selected = True  
+                self.addBtn.disabled = True                    
+                self.editBtn.disabled = True
+                self.deleteBtn.disabled = False
+                self.update()      
+            elif self.rowsSelected > 1:
+                self.rowsSelected = self.rowsSelected + 1
+                print(e.control.cells[2].content.value,self.rowsSelected, sep='|')
+                e.control.selected = True       
+                self.addBtn.disabled = True
+                self.editBtn.disabled = True
+                self.deleteBtn.disabled = False
+                self.update()
+        elif e.control.selected:
+            if self.rowsSelected == 0:
+                print(e.control.cells[2].content.value,self.rowsSelected, sep='|')
+                e.control.selected = True
+                self.addBtn.disabled = False                    
+                self.editBtn.disabled = True
+                self.deleteBtn.disabled = True
+                self.update()
+            if self.rowsSelected == 1:
+                self.rowsSelected = self.rowsSelected - 1
+                print(e.control.cells[2].content.value,self.rowsSelected, sep='|')
+                e.control.selected = False 
+                self.addBtn.disabled = False
+                self.editBtn.disabled = True
+                self.deleteBtn.disabled = True    
+                self.update()
+            elif self.rowsSelected > 1:
+                self.rowsSelected = self.rowsSelected - 1
+                print(e.control.cells[2].content.value,self.rowsSelected, sep='|')
+                e.control.selected = False
+                self.addBtn.disabled = True
+                self.editBtn.disabled = False
+                self.deleteBtn.disabled = False
+                self.update()
+
+            
+            
+
         

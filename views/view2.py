@@ -74,7 +74,7 @@ class Tab2(ft.Tab):
                                                 on_select_changed=self.onSelectItem
                                             ),
                                         ]
-                                    
+
                                     )
                                 ],
                             alignment=ft.MainAxisAlignment.CENTER, 

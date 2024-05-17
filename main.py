@@ -10,16 +10,17 @@ def main(page: ft.Page):
     page.title = "Panel de Control SAMBA SERVER"
     page.vertical_alignment = ft.MainAxisAlignment.CENTER
     page.adaptive = False
+    page.window_resizable = False
+    page.window_width = 1300
+    page.window_height = 800
 
     tabsToRender = ft.Tabs(
         selected_index=1,
         animation_duration=300,
-        tabs=[Tab1(),Tab2(),Tab3()],
+        tabs=[Tab1(),Tab2(page),Tab3()],
         expand=1,
     )
-    page.add(
-        tabsToRender
-    )
+    page.add(tabsToRender)
 
     page.add(ft.Row(
                     controls=[

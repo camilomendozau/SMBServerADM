@@ -1,11 +1,25 @@
 import flet as ft
+from views.messagenew import AlertNewResourse
 
 class Tab2(ft.Tab):
-    def __init__(self):
+    def __init__(self,pageIn):
         super().__init__()
-        self.addBtn = ft.OutlinedButton(text="Añadir...", icon = ft.icons.ADD)
+        self.page = pageIn
+        self.addBtn = ft.OutlinedButton(text="Añadir...", icon = ft.icons.ADD, on_click=self.openNewDialog)
         self.editBtn = ft.OutlinedButton(text="Editar...", disabled=True, icon = ft.icons.EDIT_ROUNDED)
         self.deleteBtn = ft.OutlinedButton(text="Suprimir", disabled=True, icon = ft.icons.DELETE)
+        self.unableSharedDirectoriesCheckbox = ft.Checkbox(label="Permitir a los usuarios compartir sus directorios",value=True, on_change=self.unableOptionsShareDirectories)
+        self.unableInvitedAccessCheckbox = ft.Checkbox(label="Permitir acceso de invitado")
+        self.groupNameTextField = ft.TextField(label="Grupo permitido",width=400,value="users")
+        self.sliderValue = ft.Text("0.0")
+        self.maxNumberShareResourcesSlider = ft.CupertinoSlider(
+                                                    divisions=1,
+                                                    max=100,
+                                                    active_color=ft.colors.PURPLE,
+                                                    thumb_color=ft.colors.PURPLE,
+                                                    on_change=self.handle_change
+                                                )
+        
         self.rowsSelected = 0
 
         self.text ="Compartidos"
@@ -93,11 +107,11 @@ class Tab2(ft.Tab):
                                 content=ft.Column(
                                     controls= [
                                         ft.Text("Recursos compartidos por los usuarios"),
-                                        ft.Checkbox(label="Permitir a los usuarios compartir sus directorios",value=True),
-                                        ft.Checkbox(label="Permitir acceso de invitado"),
-                                        ft.TextField(label="Grupo permitido",width=400,value="users"),
-                                        ft.Text("Numero maximo de recursos compartidos:"),
-                                        ft.Slider(min=0, max=10, divisions=1, label="{value}")
+                                        self.unableSharedDirectoriesCheckbox,
+                                        self.unableInvitedAccessCheckbox,
+                                        self.groupNameTextField,
+                                        self.sliderValue,
+                                        self.maxNumberShareResourcesSlider
                                     ],
                                     horizontal_alignment = ft.CrossAxisAlignment.CENTER               
                                 ),
@@ -105,7 +119,29 @@ class Tab2(ft.Tab):
                             )
                         ) 
                     ], )  
-            
+    def openNewDialog(self,e):
+        newAlert = AlertNewResourse(self.page)
+        self.page.dialog = newAlert
+        newAlert.open = True
+        self.page.update()
+
+    def unableOptionsShareDirectories(self,e):
+        if self.unableSharedDirectoriesCheckbox.value:
+            self.unableInvitedAccessCheckbox.disabled = False
+            self.groupNameTextField.disabled = False
+            self.maxNumberShareResourcesSlider.disabled= False
+            self.sliderValue.disabled = False
+        else:
+            self.unableInvitedAccessCheckbox.disabled = True
+            self.groupNameTextField.disabled = True
+            self.maxNumberShareResourcesSlider.disabled= True
+            self.sliderValue.disabled = True
+        self.update()    
+
+    def handle_change(self,e):
+        self.sliderValue.value = str(e.control.value)
+        self.update()
+
     def unableBtnsControls(self,e):
         if not e.control.selected:
             if self.rowsSelected == 0:

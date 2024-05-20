@@ -1,12 +1,12 @@
 import flet as ft
-from views.messagenew import AlertNewResourse
+from views.messagenew import AlertNewResourse,AlertEditResourse
 
 class Tab2(ft.Tab):
     def __init__(self,pageIn):
         super().__init__()
         self.page = pageIn
-        self.addBtn = ft.OutlinedButton(text="Añadir...", icon = ft.icons.ADD, on_click=self.openNewDialog)
-        self.editBtn = ft.OutlinedButton(text="Editar...", disabled=True, icon = ft.icons.EDIT_ROUNDED)
+        self.addBtn = ft.OutlinedButton(text="Añadir...", icon = ft.icons.ADD, on_click=self.openDialogNewResourse)
+        self.editBtn = ft.OutlinedButton(text="Editar...", disabled=True, icon = ft.icons.EDIT_ROUNDED, on_click=self.openDialogEditResourse)
         self.deleteBtn = ft.OutlinedButton(text="Suprimir", disabled=True, icon = ft.icons.DELETE)
         self.unableSharedDirectoriesCheckbox = ft.Checkbox(label="Permitir a los usuarios compartir sus directorios",value=True, on_change=self.unableOptionsShareDirectories)
         self.unableInvitedAccessCheckbox = ft.Checkbox(label="Permitir acceso de invitado")
@@ -119,10 +119,16 @@ class Tab2(ft.Tab):
                             )
                         ) 
                     ], )  
-    def openNewDialog(self,e):
+    def openDialogNewResourse(self,e):
         newAlert = AlertNewResourse(self.page)
         self.page.dialog = newAlert
         newAlert.open = True
+        self.page.update()
+
+    def openDialogEditResourse(self,e):
+        editAlert = AlertEditResourse(self.page)
+        self.page.dialog = editAlert
+        editAlert.open = True
         self.page.update()
 
     def unableOptionsShareDirectories(self,e):
@@ -134,7 +140,7 @@ class Tab2(ft.Tab):
         else:
             self.unableInvitedAccessCheckbox.disabled = True
             self.groupNameTextField.disabled = True
-            self.maxNumberShareResourcesSlider.disabled= True
+            self.maxNumberShareResourcesSlider.disabled = True
             self.sliderValue.disabled = True
         self.update()    
 

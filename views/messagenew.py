@@ -1,4 +1,5 @@
 import flet as ft
+from views.components import MaskElement
 newResourse = {
     "path":"",
     "name":"",
@@ -144,19 +145,8 @@ class AlertEditResourse(ft.AlertDialog):
         self.page.overlay.append(self.pick_files_dialog)
         self.cancelBtn = ft.ElevatedButton(text="Cancelar",on_click=self.cancelDialog, icon=ft.icons.CANCEL, color=ft.colors.RED_400)
         self.saveBtn = ft.ElevatedButton(text="Guardar",on_click=self.saveDialog, icon=ft.icons.SAVE, color=ft.colors.GREEN_600, disabled=True)
-        self.editMaskTable1 = EditMask()
-        self.editMaskTable2 = EditMask()
-        self.maskInputContainer = ft.Row(
-                                    controls=[
-                                        ft.TextField(label="Crear Mascara", width=500, on_change=self.unableSaveBtn, disabled=True),
-                                        ft.IconButton(
-                                            icon=ft.icons.EDIT,
-                                            icon_color = ft.colors.BLUE_500,
-                                            tooltip = "Editar propiedad",
-                                            on_click = self.showMaskTable
-                                        )
-                                ])
-        
+        self.createMaskElement = MaskElement(labelFieldText="Crear Mascara")
+        self.directoryMaskElement = MaskElement(labelFieldText="Mascara de Carpeta")
         self.content=ft.Column(
             controls=[
                 ft.Card(
@@ -176,18 +166,18 @@ class AlertEditResourse(ft.AlertDialog):
                                     alignment=ft.MainAxisAlignment.CENTER,
                                     horizontal_alignment=ft.CrossAxisAlignment.END                      
                                 ),
-                                self.maskInputContainer,
-                                self.editMaskTable1,
-                                ft.Row(
-                                    controls=[
-                                        ft.TextField(label="Mascara de carpeta", width=500, on_change=self.unableSaveBtn, disabled=True),
-                                        ft.IconButton(
-                                            icon=ft.icons.EDIT,
-                                            icon_color = ft.colors.BLUE_500,
-                                            tooltip = "Editar propiedad",
-                                            on_click = self.showMaskTable
-                                        )
-                                ]),
+                                self.createMaskElement,
+                                self.directoryMaskElement,
+                                # ft.Row(
+                                #     controls=[
+                                #         ft.TextField(label="Mascara de carpeta", width=500, on_change=self.unableSaveBtn, disabled=True),
+                                #         ft.IconButton(
+                                #             icon=ft.icons.EDIT,
+                                #             icon_color = ft.colors.BLUE_500,
+                                #             tooltip = "Editar propiedad",
+                                #             on_click = self.showMaskTable
+                                #         )
+                                # ]),
                                 
                                 # ft.Row(
                                 #     controls=[
@@ -229,13 +219,6 @@ class AlertEditResourse(ft.AlertDialog):
         self.actions=[self.cancelBtn,self.saveBtn]
         self.actions_alignment="end"
         
-    def showMaskTable(self,e):
-        # editMaskDialog = AlertEditMask(self.page,"Crear mascara")
-        # self.page.dialog = editMaskDialog
-        # editMaskDialog.open = True
-        self.maskInputContainer.visible = False
-        self.editMaskTable1.visible = True
-        self.page.update()
                                        
     def cancelDialog(self,e):
         self.open = False
@@ -256,76 +239,3 @@ class AlertEditResourse(ft.AlertDialog):
         else:  
             self.selectedFolderTF.error_text = "Debe seleccionar una carpeta"
         self.selectedFolderTF.update() 
-
-
-
-
-class EditMask(ft.Row):
-    def __init__(self):
-        super().__init__()
-        #self.elementToedit = elementToEdit
-        self.modal=True
-        self.title=ft.Text()
-        self.cancelBtn = ft.ElevatedButton(text="Cancelar",on_click=self.cancelDialog, icon=ft.icons.CANCEL, color=ft.colors.RED_400)
-        self.saveBtn = ft.ElevatedButton(text="Guardar",on_click=self.saveDialog, icon=ft.icons.SAVE, color=ft.colors.GREEN_600, disabled=True)
-        self.alignment=ft.MainAxisAlignment.CENTER, 
-        self.visible = False
-        self.controls = [ft.DataTable(                                    
-                                                border=ft.border.all(2, "red"),
-                                                border_radius=10,
-                                                vertical_lines=ft.border.BorderSide(3, "blue"),
-                                                horizontal_lines=ft.border.BorderSide(1, "green"),
-                                                sort_column_index=2,
-                                                sort_ascending=True,
-                                                heading_row_color=ft.colors.BLACK12,
-                                                #show_checkbox_column=True,
-                                                data_row_color={"hovered": "0x30FF0000"},
-                                                divider_thickness=0,
-                                                columns=[
-                                                    ft.DataColumn(ft.Text("")),
-                                                    ft.DataColumn(ft.Text("Lectura (R)")),
-                                                    ft.DataColumn(ft.Text("Escritura (W)")),
-                                                    ft.DataColumn(ft.Text("Ejecucion (X)"))
-                                                ],
-                                                rows=[
-                                                    ft.DataRow(
-                                                        cells=[
-                                                            ft.DataCell(ft.Text("Usuario")),
-                                                            ft.DataCell(ft.Checkbox()),
-                                                            ft.DataCell(ft.Checkbox()),
-                                                            ft.DataCell(ft.Checkbox())
-                                                        ]
-                                                    ),
-                                                    ft.DataRow(
-                                                        cells=[
-                                                            ft.DataCell(ft.Text("Grupo")),
-                                                            ft.DataCell(ft.Checkbox()),
-                                                            ft.DataCell(ft.Checkbox()),
-                                                            ft.DataCell(ft.Checkbox())
-                                                        ]
-                                                    ),
-                                                    ft.DataRow(
-                                                        cells=[
-                                                            ft.DataCell(ft.Text("Otros")),
-                                                            ft.DataCell(ft.Checkbox()),
-                                                            ft.DataCell(ft.Checkbox()),
-                                                            ft.DataCell(ft.Checkbox())
-                                                        ]
-                                                    )
-                                                ]
-                                            ),
-                                            ft.IconButton(
-                                                icon=ft.icons.SAVE,
-                                                icon_color = ft.colors.BLUE_500,
-                                                tooltip = "Guardar propiedad"
-                                            )
-                                        ]
-
-    def cancelDialog(self,e):
-        self.open = False
-        self.page.update()
-
-    def saveDialog(self,e):
-        self.open = False
-        self.page.update()         
-

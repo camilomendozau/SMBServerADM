@@ -4,12 +4,11 @@ class EditMask(ft.Row):
     def __init__(self,onClickSaveBtnMethodName):
         super().__init__()
         self.modal=True
-        self.title=ft.Text()
         self.selectedMatrix = [
                                  [False,False,False],
                                  [False,False,False],
                                  [False,False,False]
-                                ]
+                            ]
                                  
         self.saveBtn = ft.IconButton(
                                         icon=ft.icons.SAVE,
@@ -52,7 +51,6 @@ class EditMask(ft.Row):
         self.controls = [self.dataTableMask,self.saveBtn,self.messageTextBanner]
 
     def buildTable(self,numberMaskInput):
-        print(numberMaskInput)
         numberMask = list(str(numberMaskInput))
         namesUsers = ["Usuario","Grupo","Otros"]
         for i in range(3):
@@ -78,8 +76,7 @@ class EditMask(ft.Row):
                 elif self.selectedMatrix[i][j] == 0:   
                     self.dataTableMask.rows[i].cells.append(ft.DataCell(ft.Checkbox(value=False, on_change=self.unableSavelIconBtn)))     
         self.page.update()                
-                
-
+        
     def generateNumberMask(self):
         numbersOwner = [0,0,0]
         for i in range(len(self.dataTableMask.rows)):
@@ -89,8 +86,7 @@ class EditMask(ft.Row):
                    numbersOwner[i] = 2 ** potencia + numbersOwner[i]
                 potencia = potencia-1      
         return f'0{numbersOwner[0]}{numbersOwner[1]}{numbersOwner[2]}'       
-                                    
-    
+                                        
     def unableSavelIconBtn(self,e):
         self.saveBtn.disabled = False
         self.page.update()
@@ -112,19 +108,51 @@ class FieldTextEdit(ft.Row):
         self.textField = ft.TextField(label=labelFieldText,
                                       width=500,
                                       disabled=True,
-                                      value = textFieldVal
+                                      value = textFieldVal,
+                                      on_change=self.unableSaveBtn
                                     )
-        self.iconBtn = ft.IconButton(
-                                        icon=ft.icons.EDIT,
-                                        icon_color = ft.colors.BLUE_500,
-                                        tooltip = "Editar propiedad",
-                                        on_click=onClickIconBtnMethodName
-                        )
-        self.controls=[self.textField,self.iconBtn]  
+        self.iconBtn = ""
+        self.saveBtn = ft.IconButton(
+                                        icon=ft.icons.SAVE,
+                                        icon_color = ft.colors.GREEN_700,
+                                        tooltip = "Guardar propiedad",
+                                        disabled=True,    
+                                        visible = False,   
+                                        on_click=self.saveTextValue
+                                    )
+        if onClickIconBtnMethodName == None:
+            self.iconBtn = ft.IconButton(
+                                            icon=ft.icons.EDIT,
+                                            icon_color = ft.colors.BLUE_500,
+                                            tooltip = "Editar propiedad",
+                                            on_click=self.unableSelfTextField
+                            )
+        else:
+            self.iconBtn = ft.IconButton(
+                                            icon=ft.icons.EDIT,
+                                            icon_color = ft.colors.BLUE_500,
+                                            tooltip = "Editar propiedad",
+                                            on_click=onClickIconBtnMethodName
+                            )    
+        self.controls=[self.textField,self.iconBtn,self.saveBtn]  
     def getValue(self):
         return self.textField.value
     def updateTextFieldValue(self,valueToUpdate):
         self.textField.value = str(valueToUpdate)
+    def unableSaveBtn(self,e):
+        self.saveBtn.disabled = False
+        self.page.update()
+    def unableSelfTextField(self,e):
+        self.saveBtn.visible = True
+        self.iconBtn.visible = False
+        self.textField.disabled = False
+        self.page.update()
+    def saveTextValue(self,e):
+        #self.textField.value = self.textField.value
+        self.saveBtn.visible = False
+        self.iconBtn.visible = True
+        self.textField.disabled = True
+        self.page.update()
         
 class MaskElement(ft.Row):
     def __init__(self,labelFieldText):
@@ -145,8 +173,8 @@ class MaskElement(ft.Row):
         self.textFieldContainer.visible = True
         self.page.update()   
 
+        
+
                                           
                                         
    
-
-

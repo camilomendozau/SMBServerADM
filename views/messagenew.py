@@ -1,5 +1,5 @@
 import flet as ft
-from views.components import MaskElement
+from views.components import MaskElement,FieldTextEdit
 newResourse = {
     "path":"",
     "name":"",
@@ -129,10 +129,6 @@ class AlertNewResourse(ft.AlertDialog):
 
 
 
-
-
-
-
 class AlertEditResourse(ft.AlertDialog):
     def __init__(self,pageActual):
         super().__init__()
@@ -141,12 +137,14 @@ class AlertEditResourse(ft.AlertDialog):
         self.modal=True
         self.title=ft.Text("Editar recurso compartido")
         self.pick_files_dialog = ft.FilePicker(on_result=self.pickFilesResult)
-        self.selectedFolderTF = ft.TextField(label="Ruta del recurso compartido")
+        self.selectedFolderTF = ft.TextField(label="Ruta del recurso compartido",width=500)
         self.page.overlay.append(self.pick_files_dialog)
         self.cancelBtn = ft.ElevatedButton(text="Cancelar",on_click=self.cancelDialog, icon=ft.icons.CANCEL, color=ft.colors.RED_400)
         self.saveBtn = ft.ElevatedButton(text="Guardar",on_click=self.saveDialog, icon=ft.icons.SAVE, color=ft.colors.GREEN_600, disabled=True)
         self.createMaskElement = MaskElement(labelFieldText="Crear Mascara")
         self.directoryMaskElement = MaskElement(labelFieldText="Mascara de Carpeta")
+        self.nameTextFieldElement = FieldTextEdit(textFieldVal="",labelFieldText="Nombre de recurso",onClickIconBtnMethodName=None)
+        self.commentTextFieldElement = FieldTextEdit(textFieldVal="",labelFieldText="Descripcion",onClickIconBtnMethodName=None)
         self.content=ft.Column(
             controls=[
                 ft.Card(
@@ -154,58 +152,22 @@ class AlertEditResourse(ft.AlertDialog):
                         ft.Column(
                             controls=[
                                 ft.Text("Recurso a compartir:"),
-                                ft.Column(
+                                self.nameTextFieldElement,
+                                self.commentTextFieldElement,
+                                ft.Row(
                                     [
                                         self.selectedFolderTF,
                                         ft.ElevatedButton(
-                                            "Seleccionar ubicacion",
+                                            "Seleccionar\nubicacion",
                                             icon=ft.icons.SEARCH,
                                             on_click=lambda _: self.pick_files_dialog.get_directory_path()
                                         )    
                                     ],
-                                    alignment=ft.MainAxisAlignment.CENTER,
-                                    horizontal_alignment=ft.CrossAxisAlignment.END                      
+                                    # alignment=ft.MainAxisAlignment.CENTER,
+                                    # horizontal_alignment=ft.CrossAxisAlignment.END                      
                                 ),
                                 self.createMaskElement,
-                                self.directoryMaskElement,
-                                # ft.Row(
-                                #     controls=[
-                                #         ft.TextField(label="Mascara de carpeta", width=500, on_change=self.unableSaveBtn, disabled=True),
-                                #         ft.IconButton(
-                                #             icon=ft.icons.EDIT,
-                                #             icon_color = ft.colors.BLUE_500,
-                                #             tooltip = "Editar propiedad",
-                                #             on_click = self.showMaskTable
-                                #         )
-                                # ]),
-                                
-                                # ft.Row(
-                                #     controls=[
-                                #         ft.TextField(label="Descripcion", width=500, on_change=self.unableSaveBtn, disabled=True),
-                                #         ft.IconButton(
-                                #             icon=ft.icons.EDIT,
-                                #             icon_color = ft.colors.BLUE_500,
-                                #             tooltip = "Editar propiedad"
-                                #         )
-                                # ]),
-                                # ft.Row(
-                                #     controls=[
-                                #         ft.TextField(label="Solo lectura", width=500, on_change=self.unableSaveBtn, disabled=True),
-                                #         ft.IconButton(
-                                #             icon=ft.icons.EDIT,
-                                #             icon_color = ft.colors.BLUE_500,
-                                #             tooltip = "Editar propiedad"
-                                #         )
-                                # ]),
-                                # ft.Row(
-                                #     controls=[
-                                #         ft.TextField(label="Heredar ACLs", width=500, on_change=self.unableSaveBtn, disabled=True),
-                                #         ft.IconButton(
-                                #             icon=ft.icons.EDIT,
-                                #             icon_color = ft.colors.BLUE_500,
-                                #             tooltip = "Editar propiedad"
-                                #         )
-                                # ]),
+                                self.directoryMaskElement
                             ],
                             horizontal_alignment = ft.CrossAxisAlignment.CENTER   
                         ),

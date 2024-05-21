@@ -5,10 +5,6 @@ class EditMask(ft.Row):
         super().__init__()
         self.modal=True
         self.title=ft.Text()
-        self.maskNumber = '0123'
-        self.__userValue = 0
-        self.__groupValues = 0
-        self.__otherValues = 0
         self.selectedMatrix = [
                                  [False,False,False],
                                  [False,False,False],
@@ -56,7 +52,8 @@ class EditMask(ft.Row):
         self.controls = [self.dataTableMask,self.saveBtn,self.messageTextBanner]
 
     def buildTable(self,numberMaskInput):
-        numberMask = list(numberMaskInput)
+        print(numberMaskInput)
+        numberMask = list(str(numberMaskInput))
         namesUsers = ["Usuario","Grupo","Otros"]
         for i in range(3):
             self.dataTableMask.rows[i].cells.append(ft.DataCell(ft.Text(namesUsers[i])))
@@ -83,18 +80,17 @@ class EditMask(ft.Row):
         self.page.update()                
                 
 
-    def generateNumber(self,numberMask):
-        self.maskNumber = numberMask
-        namesUsers = ["Usuario","Grupo","Otros"]
-        for i in range(len(self.selectedMatrix[i])):
-            self.dataTableMask.rows[i].cells.append(ft.DataCell(ft.Text(namesUsers[i])))
-            for j in range(len(self.selectedMatrix[i])):
-                if self.selectedMatrix[i][j] is True:
-                   self.__valuesMatrix[i][j] = 2 ** self.__valuesMatrix[i][j]
-                else:
-                   self.__valuesMatrix[i][j] = 0                    
-        
-
+    def generateNumberMask(self):
+        numbersOwner = [0,0,0]
+        for i in range(len(self.dataTableMask.rows)):
+            potencia = 2
+            for j in range(1,len(self.dataTableMask.rows[i].cells)):
+                if self.dataTableMask.rows[i].cells[j].content.value is True:
+                   numbersOwner[i] = 2 ** potencia + numbersOwner[i]
+                potencia = potencia-1      
+        return f'0{numbersOwner[0]}{numbersOwner[1]}{numbersOwner[2]}'       
+                                    
+    
     def unableSavelIconBtn(self,e):
         self.saveBtn.disabled = False
         self.page.update()
@@ -127,22 +123,24 @@ class FieldTextEdit(ft.Row):
         self.controls=[self.textField,self.iconBtn]  
     def getValue(self):
         return self.textField.value
+    def updateTextFieldValue(self,valueToUpdate):
+        self.textField.value = str(valueToUpdate)
         
 class MaskElement(ft.Row):
-    def __init__(self,labelFieldText,textFieldValue):
+    def __init__(self,labelFieldText):
         super().__init__()
         self.tableEditContainer = EditMask(onClickSaveBtnMethodName=self.convertSaveNumberMask)
-        self.textFieldContainer = FieldTextEdit(textFieldVal=textFieldValue,labelFieldText=labelFieldText,onClickIconBtnMethodName=self.showMaskTable)
-        self.controls=[ self.textFieldContainer,
-                       self.tableEditContainer
-                    ]     
+        self.textFieldContainer = FieldTextEdit(textFieldVal="0000",labelFieldText=labelFieldText,onClickIconBtnMethodName=self.showMaskTable)
+        self.controls=[self.textFieldContainer,self.tableEditContainer]    
+
     def showMaskTable(self,e):
-        self.tableEditContainer.buildTable(self.textFieldContainer.getValue())
+        self.tableEditContainer.buildTable(str(self.textFieldContainer.getValue()))
         self.tableEditContainer.visible = True
         self.textFieldContainer.visible = False
         self.page.update()
 
     def convertSaveNumberMask(self,e):
+        self.textFieldContainer.updateTextFieldValue(self.tableEditContainer.generateNumberMask())
         self.tableEditContainer.visible = False
         self.textFieldContainer.visible = True
         self.page.update()   

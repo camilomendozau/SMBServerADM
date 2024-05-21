@@ -145,8 +145,8 @@ class AlertEditResourse(ft.AlertDialog):
         self.page.overlay.append(self.pick_files_dialog)
         self.cancelBtn = ft.ElevatedButton(text="Cancelar",on_click=self.cancelDialog, icon=ft.icons.CANCEL, color=ft.colors.RED_400)
         self.saveBtn = ft.ElevatedButton(text="Guardar",on_click=self.saveDialog, icon=ft.icons.SAVE, color=ft.colors.GREEN_600, disabled=True)
-        self.createMaskElement = MaskElement(labelFieldText="Crear Mascara")
-        self.directoryMaskElement = MaskElement(labelFieldText="Mascara de Carpeta")
+        self.createMaskElement = MaskElement(textFieldValue='0765',labelFieldText="Crear Mascara")
+        self.directoryMaskElement = MaskElement(textFieldValue='0234',labelFieldText="Mascara de Carpeta")
         self.content=ft.Column(
             controls=[
                 ft.Card(
@@ -216,8 +216,8 @@ class AlertEditResourse(ft.AlertDialog):
             ],
 
         )
-        self.actions=[self.cancelBtn,self.saveBtn]
-        self.actions_alignment="end"
+        # self.actions=[self.cancelBtn,self.saveBtn]
+        # self.actions_alignment="end"
         
                                        
     def cancelDialog(self,e):

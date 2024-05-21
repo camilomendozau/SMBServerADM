@@ -1,24 +1,19 @@
 import flet as ft
+import time
 class EditMask(ft.Row):
     def __init__(self,onClickSaveBtnMethodName):
         super().__init__()
         self.modal=True
         self.title=ft.Text()
-        self.maskNumber = 0
-        self.__userValues = ([],[])
-        self.__groupValues = ([],[])
-        self.__otherValues = ([],[])
-        self.__selectedMatrix = [
-                                 [False,True,False],
+        self.maskNumber = '0123'
+        self.__userValue = 0
+        self.__groupValues = 0
+        self.__otherValues = 0
+        self.selectedMatrix = [
                                  [False,False,False],
-                                 [True,False,True]
+                                 [False,False,False],
+                                 [False,False,False]
                                 ]
-        
-        self.__valuesMatrix = [
-                                 [2,1,0],
-                                 [2,1,0],
-                                 [2,1,0]
-                            ]
                                  
         self.saveBtn = ft.IconButton(
                                         icon=ft.icons.SAVE,
@@ -48,41 +43,57 @@ class EditMask(ft.Row):
                                                 ],
                                                 rows=[
                                                     ft.DataRow(
-                                                        cells=[
-                                                            ft.DataCell(ft.Text("Usuario")),
-                                                            ft.DataCell(ft.Checkbox(on_change=self.unableSavelIconBtn)),
-                                                            ft.DataCell(ft.Checkbox(on_change=self.unableSavelIconBtn)),
-                                                            ft.DataCell(ft.Checkbox(on_change=self.unableSavelIconBtn))
-                                                        ]
+                                                        cells=[]
                                                     ),
                                                     ft.DataRow(
-                                                        cells=[
-                                                            ft.DataCell(ft.Text("Grupo")),
-                                                            ft.DataCell(ft.Checkbox(on_change=self.unableSavelIconBtn)),
-                                                            ft.DataCell(ft.Checkbox(on_change=self.unableSavelIconBtn)),
-                                                            ft.DataCell(ft.Checkbox(on_change=self.unableSavelIconBtn))
-                                                        ]
+                                                        cells=[]
                                                     ),
                                                     ft.DataRow(
-                                                        cells=[
-                                                            ft.DataCell(ft.Text("Otros")),
-                                                            ft.DataCell(ft.Checkbox(on_change=self.unableSavelIconBtn)),
-                                                            ft.DataCell(ft.Checkbox(on_change=self.unableSavelIconBtn)),
-                                                            ft.DataCell(ft.Checkbox(on_change=self.unableSavelIconBtn))
-                                                        ]
+                                                        cells=[]
                                                     )
                                                 ]
                                             )                                         
         self.controls = [self.dataTableMask,self.saveBtn,self.messageTextBanner]
-    # def buildTable(self):
-    #     for i in range(len(self.__selectedMatrix)):
-    #         self.dataTableMask.rows[i].cells[0] = ft.DataCell(ft.Text("Usuario")),
-    #         for j in range(len(self.__selectedMatrix[i])):
-    #             if self.__selectedMatrix[i][j] is True:
-    #                self.__valuesMatrix[i][j] = 2 ** self.__valuesMatrix[i][j]
-    #             else:
-    #                self.__valuesMatrix[i][j] = 0      
-    #     print(self.dataTableMask.rows[0].cells)               TRABAJAR EN ESTO
+
+    def buildTable(self,numberMaskInput):
+        numberMask = list(numberMaskInput)
+        namesUsers = ["Usuario","Grupo","Otros"]
+        for i in range(3):
+            self.dataTableMask.rows[i].cells.append(ft.DataCell(ft.Text(namesUsers[i])))
+            j = 0
+            cociente = int(numberMask[i+1])
+            if cociente < 4:
+                self.selectedMatrix[i][2] = 0
+            while cociente >= 0 and j < 3:
+                bit = int(cociente%2)
+                if  bit == 1:
+                    self.selectedMatrix[i][j] = 1
+                elif bit == 0:   
+                    self.selectedMatrix[i][j] = 0
+                cociente = cociente/2
+                j = j + 1 
+    
+        for i in range(3):
+            self.selectedMatrix[i] = self.selectedMatrix[i][::-1]
+            for j in range(3):
+                if self.selectedMatrix[i][j] == 1:
+                    self.dataTableMask.rows[i].cells.append(ft.DataCell(ft.Checkbox(value=True,on_change=self.unableSavelIconBtn)))
+                elif self.selectedMatrix[i][j] == 0:   
+                    self.dataTableMask.rows[i].cells.append(ft.DataCell(ft.Checkbox(value=False, on_change=self.unableSavelIconBtn)))     
+        self.page.update()                
+                
+
+    def generateNumber(self,numberMask):
+        self.maskNumber = numberMask
+        namesUsers = ["Usuario","Grupo","Otros"]
+        for i in range(len(self.selectedMatrix[i])):
+            self.dataTableMask.rows[i].cells.append(ft.DataCell(ft.Text(namesUsers[i])))
+            for j in range(len(self.selectedMatrix[i])):
+                if self.selectedMatrix[i][j] is True:
+                   self.__valuesMatrix[i][j] = 2 ** self.__valuesMatrix[i][j]
+                else:
+                   self.__valuesMatrix[i][j] = 0                    
+        
 
     def unableSavelIconBtn(self,e):
         self.saveBtn.disabled = False
@@ -100,35 +111,38 @@ class EditMask(ft.Row):
         return 0
     
 class FieldTextEdit(ft.Row):
-    def __init__(self,labelFieldText,onClickIconBtnMethodName):
+    def __init__(self,textFieldVal,labelFieldText,onClickIconBtnMethodName):
         super().__init__()
-        self.controls=[ ft.TextField(label=labelFieldText,
+        self.textField = ft.TextField(label=labelFieldText,
                                       width=500,
-                                      disabled=True
-                                    ),
-                        ft.IconButton(
+                                      disabled=True,
+                                      value = textFieldVal
+                                    )
+        self.iconBtn = ft.IconButton(
                                         icon=ft.icons.EDIT,
                                         icon_color = ft.colors.BLUE_500,
                                         tooltip = "Editar propiedad",
                                         on_click=onClickIconBtnMethodName
                         )
-                    ]   
+        self.controls=[self.textField,self.iconBtn]  
+    def getValue(self):
+        return self.textField.value
         
 class MaskElement(ft.Row):
-    def __init__(self,labelFieldText):
+    def __init__(self,labelFieldText,textFieldValue):
         super().__init__()
         self.tableEditContainer = EditMask(onClickSaveBtnMethodName=self.convertSaveNumberMask)
-        self.textFieldContainer = FieldTextEdit(labelFieldText=labelFieldText,onClickIconBtnMethodName=self.showMaskTable)
+        self.textFieldContainer = FieldTextEdit(textFieldVal=textFieldValue,labelFieldText=labelFieldText,onClickIconBtnMethodName=self.showMaskTable)
         self.controls=[ self.textFieldContainer,
                        self.tableEditContainer
                     ]     
     def showMaskTable(self,e):
+        self.tableEditContainer.buildTable(self.textFieldContainer.getValue())
         self.tableEditContainer.visible = True
         self.textFieldContainer.visible = False
         self.page.update()
 
     def convertSaveNumberMask(self,e):
-        self.tableEditContainer.buildTable()
         self.tableEditContainer.visible = False
         self.textFieldContainer.visible = True
         self.page.update()   

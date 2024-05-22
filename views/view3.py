@@ -4,7 +4,7 @@ class Tab3(ft.Tab):
     def __init__(self):
         super().__init__()
         self.text="Identidad"
-        self.icon=ft.icons.PERM_IDENTITY   
+        self.icon=ft.icons.SUPERVISED_USER_CIRCLE_OUTLINED 
         self.content= ft.Column(
                   controls = [    
                         ft.Row(

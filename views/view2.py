@@ -4,6 +4,8 @@ from views.messagenew import AlertNewResourse,AlertEditResourse
 class Tab2(ft.Tab):
     def __init__(self,pageIn):
         super().__init__()
+        self.text ="Compartidos"
+        self.icon = ft.icons.FOLDER_SHARED
         self.page = pageIn
         self.addBtn = ft.OutlinedButton(text="Añadir...", icon = ft.icons.ADD, on_click=self.openDialogNewResourse)
         self.editBtn = ft.OutlinedButton(text="Editar...", disabled=True, icon = ft.icons.EDIT_ROUNDED, on_click=self.openDialogEditResourse)
@@ -21,21 +23,19 @@ class Tab2(ft.Tab):
                                                 )
         
         self.rowsSelected = 0
-
-        self.text ="Compartidos"
-        self.icon = ft.icons.FOLDER_SHARED
         self.content=ft.Column(
                     controls=[
                         ft.Row(
                             controls = [ft.Text("Recursos compartidos disponibles:"),
-                                       ft.Dropdown(
-                                                        width=300,
-                                                        options=[
-                                                            ft.dropdown.Option("Por nombre"),
-                                                            ft.dropdown.Option("Por fecha"),
-                                                        ],
-                                                        label="Filtrar",
-                                        )],
+                                    #    ft.Dropdown(
+                                    #                     width=300,
+                                    #                     options=[
+                                    #                         ft.dropdown.Option("Por nombre"),
+                                    #                         ft.dropdown.Option("Por fecha"),
+                                    #                     ],
+                                    #                     label="Filtrar",
+                                    #     )
+                                    ],
                             alignment=ft.MainAxisAlignment.SPACE_BETWEEN,            
                         ),
                         ft.Row(

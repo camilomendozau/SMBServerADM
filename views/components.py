@@ -173,7 +173,69 @@ class MaskElement(ft.Row):
         self.textFieldContainer.visible = True
         self.page.update()   
 
-        
+class MessageBanner (ft.Banner):
+    def __init__(self,pageIn):
+        super().__init__()
+        self.page = pageIn
+        self.textMessage = ft.Text("")
+        self.content=self.textMessage
+        self.actions=[
+            ft.TextButton("Ok",on_click=self.closeBanner),
+        ]
+    def showSucessfulMessage(self,message):
+        self.bgcolor=ft.colors.GREEN_100
+        self.textMessage.value = message
+        self.leading = ft.Icon(ft.icons.CHECK, color=ft.colors.GREEN_300, size=20)
+        self.page.banner.open = True
+        self.page.update()
+
+    def showWarningMessage(self,message):
+        self.bgcolor=ft.colors.AMBER_100
+        self.textMessage.value = message
+        self.leading = ft.Icon(ft.icons.WARNING_AMBER_ROUNDED, color=ft.colors.AMBER, size=20)
+        self.page.banner.open = True
+        self.page.update()   
+
+    def closeBanner(self,e):
+        self.page.banner.open = False
+        self.page.update()    
+
+class CheckboxElement(ft.Row):
+    def __init__(self,labelIn):
+        super().__init__()    
+        self.saveBtn = ft.IconButton(
+                                        icon=ft.icons.SAVE,
+                                        icon_color = ft.colors.GREEN_700,
+                                        tooltip = "Guardar propiedad",
+                                        visible=False,
+                                        disabled=True,       
+                                        on_click=self.disableCheckBox   
+                                    )  
+        self.checkbox = ft.Checkbox(label=labelIn,disabled=True,on_change=self.enableSaveBtn)
+        self.editBtn = ft.IconButton(
+                        icon=ft.icons.EDIT,
+                        icon_color = ft.colors.BLUE_500,
+                        tooltip = "Editar propiedad",
+                        on_click=self.enableCheckBox
+                    )
+        self.controls = [
+            self.checkbox,
+            self.saveBtn,
+            self.editBtn
+        ]  
+    def enableSaveBtn(self,e):
+        self.saveBtn.disabled = False
+        self.page.update()    
+    def enableCheckBox(self,e):
+        self.saveBtn.visible = True
+        self.editBtn.visible = False
+        self.checkbox.disabled = False
+        self.page.update()
+    def disableCheckBox(self,e):
+        self.saveBtn.visible = False
+        self.editBtn.visible = True
+        self.checkbox.disabled = True
+        self.page.update()    
 
                                           
                                         

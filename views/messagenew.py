@@ -1,5 +1,5 @@
 import flet as ft
-from views.components import MaskElement,FieldTextEdit
+from views.components import MaskElement,FieldTextEdit,CheckboxElement
 newResourse = {
     "path":"",
     "name":"",
@@ -140,7 +140,7 @@ class AlertEditResourse(ft.AlertDialog):
         self.selectedFolderTF = ft.TextField(label="Ruta del recurso compartido",width=500)
         self.page.overlay.append(self.pick_files_dialog)
         self.cancelBtn = ft.ElevatedButton(text="Cancelar",on_click=self.cancelDialog, icon=ft.icons.CANCEL, color=ft.colors.RED_400)
-        self.saveBtn = ft.ElevatedButton(text="Guardar",on_click=self.saveDialog, icon=ft.icons.SAVE, color=ft.colors.GREEN_600, disabled=True)
+        self.saveBtn = ft.ElevatedButton(text="Guardar",on_click=self.saveDialog, icon=ft.icons.SAVE, color=ft.colors.GREEN_600)
         self.createMaskElement = MaskElement(labelFieldText="Crear Mascara")
         self.directoryMaskElement = MaskElement(labelFieldText="Mascara de Carpeta")
         self.nameTextFieldElement = FieldTextEdit(textFieldVal="",labelFieldText="Nombre de recurso",onClickIconBtnMethodName=None)
@@ -167,7 +167,9 @@ class AlertEditResourse(ft.AlertDialog):
                                     # horizontal_alignment=ft.CrossAxisAlignment.END                      
                                 ),
                                 self.createMaskElement,
-                                self.directoryMaskElement
+                                self.directoryMaskElement,
+                                CheckboxElement("Heredar ACL"),
+                                CheckboxElement("Solo Lectura")
                             ],
                             horizontal_alignment = ft.CrossAxisAlignment.CENTER   
                         ),
@@ -178,8 +180,8 @@ class AlertEditResourse(ft.AlertDialog):
             ],
 
         )
-        # self.actions=[self.cancelBtn,self.saveBtn]
-        # self.actions_alignment="end"
+        self.actions=[self.cancelBtn,self.saveBtn]
+        self.actions_alignment="end"
         
                                        
     def cancelDialog(self,e):

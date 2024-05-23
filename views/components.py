@@ -153,12 +153,15 @@ class FieldTextEdit(ft.Row):
         self.iconBtn.visible = True
         self.textField.disabled = True
         self.page.update()
+    def setTextFieldValue(self,value):
+        self.textField.value = value
+
         
 class MaskElement(ft.Row):
-    def __init__(self,labelFieldText):
+    def __init__(self,labelFieldText,textFielValueIn):
         super().__init__()
         self.tableEditContainer = EditMask(onClickSaveBtnMethodName=self.convertSaveNumberMask)
-        self.textFieldContainer = FieldTextEdit(textFieldVal="0000",labelFieldText=labelFieldText,onClickIconBtnMethodName=self.showMaskTable)
+        self.textFieldContainer = FieldTextEdit(textFieldVal=textFielValueIn,labelFieldText=labelFieldText,onClickIconBtnMethodName=self.showMaskTable)
         self.controls=[self.textFieldContainer,self.tableEditContainer]    
 
     def showMaskTable(self,e):
@@ -201,7 +204,7 @@ class MessageBanner (ft.Banner):
         self.page.update()    
 
 class CheckboxElement(ft.Row):
-    def __init__(self,labelIn):
+    def __init__(self,labelIn,ckeckboxInitValue):
         super().__init__()    
         self.saveBtn = ft.IconButton(
                                         icon=ft.icons.SAVE,
@@ -211,7 +214,9 @@ class CheckboxElement(ft.Row):
                                         disabled=True,       
                                         on_click=self.disableCheckBox   
                                     )  
-        self.checkbox = ft.Checkbox(label=labelIn,disabled=True,on_change=self.enableSaveBtn)
+        self.checkbox = ft.Checkbox(label=labelIn,disabled=True,
+                                    on_change=self.enableSaveBtn,
+                                    value=ckeckboxInitValue)
         self.editBtn = ft.IconButton(
                         icon=ft.icons.EDIT,
                         icon_color = ft.colors.BLUE_500,
@@ -222,7 +227,14 @@ class CheckboxElement(ft.Row):
             self.checkbox,
             self.saveBtn,
             self.editBtn
-        ]  
+        ]
+    def changeCheckboxValue(self):
+        if self.checkbox.value == True:
+            self.checkbox.value = False
+        else:
+            self.checkbox.value = True
+        self.page.update()    
+
     def enableSaveBtn(self,e):
         self.saveBtn.disabled = False
         self.page.update()    

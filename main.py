@@ -11,7 +11,7 @@ def main(page: ft.Page):
     page.adaptive = False
     page.window_resizable = False
     page.window_width = 1300
-    page.window_height = 800
+    page.window_height = 850
 
     tabsToRender = ft.Tabs(
         selected_index=1,

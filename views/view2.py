@@ -14,7 +14,8 @@ class Tab2(ft.Tab):
         self.unableSharedDirectoriesCheckbox = ft.Checkbox(label="Permitir a los usuarios compartir sus directorios",value=True, on_change=self.unableOptionsShareDirectories)
         self.unableInvitedAccessCheckbox = ft.Checkbox(label="Permitir acceso de invitado")
         self.groupNameTextField = ft.TextField(label="Grupo permitido",width=400,value="users")
-        self.sliderValue = ft.Text("0.0")
+        self.sliderValue = ft.Text("0")
+        self.currentRowToEdit = ""
         self.shareTable = ft.Row(
                             controls = [ft.DataTable(                                    
                                         border=ft.border.all(2, "red"),
@@ -77,11 +78,13 @@ class Tab2(ft.Tab):
                         )
         self.__generateShareTableData__()
         self.maxNumberShareResourcesSlider = ft.CupertinoSlider(
-                                                    divisions=1,
+                                                    divisions=5,
                                                     max=100,
                                                     active_color=ft.colors.PURPLE,
                                                     thumb_color=ft.colors.PURPLE,
-                                                    on_change=self.handle_change
+                                                    on_change=self.handle_change,
+                                                    width=500,
+                                                    value=30
                                                 )
         
         self.rowsSelected = 0
@@ -98,7 +101,7 @@ class Tab2(ft.Tab):
                                     #                     label="Filtrar",
                                     #     )
                                     ],
-                            alignment=ft.MainAxisAlignment.SPACE_BETWEEN,            
+                            alignment=ft.MainAxisAlignment.SPACE_AROUND           
                         ),
                         self.shareTable,
                         ft.Row(
@@ -112,9 +115,16 @@ class Tab2(ft.Tab):
                                         ft.Text("Recursos compartidos por los usuarios"),
                                         self.unableSharedDirectoriesCheckbox,
                                         self.unableInvitedAccessCheckbox,
-                                        self.groupNameTextField,
-                                        self.sliderValue,
-                                        self.maxNumberShareResourcesSlider
+                                        ft.Row(
+                                            [
+                                                self.groupNameTextField,
+                                                ft.Column([
+                                                    self.sliderValue,
+                                                    self.maxNumberShareResourcesSlider
+                                                ])
+                                            ],
+                                            alignment=ft.MainAxisAlignment.SPACE_BETWEEN
+                                        )
                                     ],
                                     horizontal_alignment = ft.CrossAxisAlignment.CENTER               
                                 ),
@@ -124,14 +134,14 @@ class Tab2(ft.Tab):
                     ], )  
         
     def __generateShareTableData__(self):
-        namesBaseList = ["homes","users","printers","groups","print$"]
+        namesBaseList = ["homes","users","printers","groups","print$","profiles"]
         for i in range(len(namesBaseList)):
             rowToInner = ft.DataRow()
             rowToInner.cells.append(ft.DataCell(ft.Text("Habilitado",color=ft.colors.LIGHT_GREEN_ACCENT_400)))
             try:  
                 rowToInner.cells.append(ft.DataCell(ft.Text(config[namesBaseList[i]]['read only'])))
             except:
-                rowToInner.cells.append(ft.DataCell(ft.Text("")))    
+                rowToInner.cells.append(ft.DataCell(ft.Text("No")))    
             try:  
                 rowToInner.cells.append(ft.DataCell(ft.Text(namesBaseList[i])))
             except:
@@ -155,7 +165,7 @@ class Tab2(ft.Tab):
         self.page.update()
 
     def openDialogEditResourse(self,e):
-        editAlert = AlertEditResourse(self.page)
+        editAlert = AlertEditResourse(self.page,self.currentRowToEdit[2].content.value)
         self.page.dialog = editAlert
         editAlert.open = True
         self.page.update()
@@ -181,7 +191,7 @@ class Tab2(ft.Tab):
         if not e.control.selected:
             if self.rowsSelected == 0:
                 self.rowsSelected = self.rowsSelected + 1
-                print(e.control.cells[2].content.value,self.rowsSelected, sep='|')
+                self.currentRowToEdit = e.control.cells
                 e.control.selected = True
                 self.addBtn.disabled = True                    
                 self.editBtn.disabled = False
@@ -189,7 +199,7 @@ class Tab2(ft.Tab):
                 self.update()
             elif self.rowsSelected == 1:  
                 self.rowsSelected = self.rowsSelected + 1
-                print(e.control.cells[2].content.value,self.rowsSelected, sep='|')         
+                #print(e.control.cells[2].content.value,self.rowsSelected, sep='|')         
                 e.control.selected = True  
                 self.addBtn.disabled = True                    
                 self.editBtn.disabled = True
@@ -197,7 +207,7 @@ class Tab2(ft.Tab):
                 self.update()      
             elif self.rowsSelected > 1:
                 self.rowsSelected = self.rowsSelected + 1
-                print(e.control.cells[2].content.value,self.rowsSelected, sep='|')
+                #print(e.control.cells[2].content.value,self.rowsSelected, sep='|')
                 e.control.selected = True       
                 self.addBtn.disabled = True
                 self.editBtn.disabled = True
@@ -205,7 +215,7 @@ class Tab2(ft.Tab):
                 self.update()
         elif e.control.selected:
             if self.rowsSelected == 0:
-                print(e.control.cells[2].content.value,self.rowsSelected, sep='|')
+                #print(e.control.cells[2].content.value,self.rowsSelected, sep='|')
                 e.control.selected = True
                 self.addBtn.disabled = False                    
                 self.editBtn.disabled = True
@@ -213,7 +223,7 @@ class Tab2(ft.Tab):
                 self.update()
             if self.rowsSelected == 1:
                 self.rowsSelected = self.rowsSelected - 1
-                print(e.control.cells[2].content.value,self.rowsSelected, sep='|')
+                #print(e.control.cells[2].content.value,self.rowsSelected, sep='|')
                 e.control.selected = False 
                 self.addBtn.disabled = False
                 self.editBtn.disabled = True
@@ -221,7 +231,7 @@ class Tab2(ft.Tab):
                 self.update()
             elif self.rowsSelected > 1:
                 self.rowsSelected = self.rowsSelected - 1
-                print(e.control.cells[2].content.value,self.rowsSelected, sep='|')
+                #print(e.control.cells[2].content.value,self.rowsSelected, sep='|')
                 e.control.selected = False
                 self.addBtn.disabled = True
                 self.editBtn.disabled = False

@@ -1,4 +1,5 @@
 import flet as ft
+from config import config
 from views.components import MaskElement,FieldTextEdit,CheckboxElement
 newResourse = {
     "path":"",
@@ -130,28 +131,25 @@ class AlertNewResourse(ft.AlertDialog):
 
 
 class AlertEditResourse(ft.AlertDialog):
-    def __init__(self,pageActual):
+    def __init__(self,pageActual,dataToEdit):
         super().__init__()
         self.page = pageActual
-        #self.elementToedit = elementToEdit
+        self.nameElementsToedit = dataToEdit
+        #print(dataToEdit)
         self.modal=True
-        self.title=ft.Text("Editar recurso compartido")
+        self.title=ft.Text(f"Editar recurso compartido: {self.nameElementsToedit}")
         self.pick_files_dialog = ft.FilePicker(on_result=self.pickFilesResult)
         self.selectedFolderTF = ft.TextField(label="Ruta del recurso compartido",width=500)
         self.page.overlay.append(self.pick_files_dialog)
         self.cancelBtn = ft.ElevatedButton(text="Cancelar",on_click=self.cancelDialog, icon=ft.icons.CANCEL, color=ft.colors.RED_400)
         self.saveBtn = ft.ElevatedButton(text="Guardar",on_click=self.saveDialog, icon=ft.icons.SAVE, color=ft.colors.GREEN_600)
-        self.createMaskElement = MaskElement(labelFieldText="Crear Mascara")
-        self.directoryMaskElement = MaskElement(labelFieldText="Mascara de Carpeta")
-        self.nameTextFieldElement = FieldTextEdit(textFieldVal="",labelFieldText="Nombre de recurso",onClickIconBtnMethodName=None)
-        self.commentTextFieldElement = FieldTextEdit(textFieldVal="",labelFieldText="Descripcion",onClickIconBtnMethodName=None)
+        self.loadProperties()
         self.content=ft.Column(
             controls=[
                 ft.Card(
                     content= ft.Container(
                         ft.Column(
                             controls=[
-                                ft.Text("Recurso a compartir:"),
                                 self.nameTextFieldElement,
                                 self.commentTextFieldElement,
                                 ft.Row(
@@ -168,8 +166,8 @@ class AlertEditResourse(ft.AlertDialog):
                                 ),
                                 self.createMaskElement,
                                 self.directoryMaskElement,
-                                CheckboxElement("Heredar ACL"),
-                                CheckboxElement("Solo Lectura")
+                                self.checkboxACL,
+                                self.checkboxOnlyRead,
                             ],
                             horizontal_alignment = ft.CrossAxisAlignment.CENTER   
                         ),
@@ -183,7 +181,36 @@ class AlertEditResourse(ft.AlertDialog):
         self.actions=[self.cancelBtn,self.saveBtn]
         self.actions_alignment="end"
         
-                                       
+    def loadProperties(self):
+        self.nameTextFieldElement = FieldTextEdit(self.nameElementsToedit,labelFieldText="Nombre de recurso",onClickIconBtnMethodName=None)   
+        try:
+            self.commentTextFieldElement = FieldTextEdit(textFieldVal=config[self.nameElementsToedit]['comment'],labelFieldText="Descripcion",onClickIconBtnMethodName=None)
+        except:
+            self.commentTextFieldElement = FieldTextEdit(textFieldVal="",labelFieldText="Descripcion",onClickIconBtnMethodName=None)
+        try:
+            self.selectedFolderTF.value = config[self.nameElementsToedit]['path']
+        except:
+            self.selectedFolderTF.value = ""
+        try:
+            self.createMaskElement = MaskElement(labelFieldText="Crear Mascara", textFielValueIn=config[self.nameElementsToedit]['create mask'])
+        except:
+            self.createMaskElement = MaskElement(labelFieldText="Crear Mascara", textFielValueIn='0000')
+        try:
+            self.directoryMaskElement = MaskElement(labelFieldText="Mascara de Carpeta",textFielValueIn=config[self.nameElementsToedit]['directory mask'])    
+        except:
+            self.directoryMaskElement = MaskElement(labelFieldText="Mascara de Carpeta",textFielValueIn="0000")
+        try:
+            self.checkboxACL = CheckboxElement("Heredar ACL",True) if config[self.nameElementsToedit]['inherit acls'] == 'Yes' else CheckboxElement("Heredar ACL",False)
+        except:
+            self.checkboxACL = CheckboxElement("Heredar ACL",False)
+        try:
+            self.checkboxOnlyRead = CheckboxElement("Solo Lectura",True) if config[self.nameElementsToedit]['read only'] == 'Yes' else CheckboxElement("Solo Lectura",False)
+        except:
+            self.checkboxOnlyRead = CheckboxElement("Solo Lectura",False)
+
+
+            
+
     def cancelDialog(self,e):
         self.open = False
         self.page.update()
@@ -198,7 +225,7 @@ class AlertEditResourse(ft.AlertDialog):
 
     def pickFilesResult(self,e: ft.FilePickerResultEvent):
         if e.path:
-            self.selectedFolderTF.value = e.path
+            self.selectedFolderTF.value = str(e.path)
             self.unableSaveBtn(e)
         else:  
             self.selectedFolderTF.error_text = "Debe seleccionar una carpeta"

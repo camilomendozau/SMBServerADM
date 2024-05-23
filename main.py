@@ -3,6 +3,9 @@ from views.view1 import Tab1
 from views.view2 import Tab2
 from views.view3 import Tab3
 from views.view4 import Tab4
+from config import config
+
+print(config)
 # from views.view5 import tab5
 
 def main(page: ft.Page):
@@ -16,7 +19,7 @@ def main(page: ft.Page):
     tabsToRender = ft.Tabs(
         selected_index=1,
         animation_duration=300,
-        tabs=[Tab1(),Tab2(page),Tab3(),Tab4(page)],
+        tabs=[Tab1(),Tab2(page),Tab3(page),Tab4(page)],
         expand=1,
     )
     page.add(tabsToRender)

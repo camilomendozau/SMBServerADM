@@ -134,7 +134,8 @@ class Tab2(ft.Tab):
                     ], )  
         
     def __generateShareTableData__(self):
-        namesBaseList = ["homes","users","printers","groups","print$","profiles"]
+        namesBaseList = config.sections()[1:]
+        # ["homes","users","printers","groups","print$","profiles"]
         for i in range(len(namesBaseList)):
             rowToInner = ft.DataRow()
             rowToInner.cells.append(ft.DataCell(ft.Text("Habilitado",color=ft.colors.LIGHT_GREEN_ACCENT_400)))

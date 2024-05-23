@@ -2,21 +2,26 @@ import flet as ft
 from config import config
 
 class Tab3(ft.Tab):
-    def __init__(self):
+    def __init__(self,pageIn):
         super().__init__()
         self.text="Identidad"
         self.icon=ft.icons.SUPERVISED_USER_CIRCLE_OUTLINED 
+        self.page = pageIn
         self.winsRadioGroup = ft.RadioGroup(content=ft.Column([
                                                     ft.Radio(value="0", label="Compatibilidad con servidor WINS"),
                                                     ft.Radio(value="1", label="Servidor WINS remoto"),
                                                 ]),
                                             on_change=self.onChangeWinsOptions    
                                         )
+        self.nameWinsServer = ft.TextField(label="Nombre",value="",disabled=True)
         if config['global']['wins support'] == "Yes":
             self.winsRadioGroup.value = "0"
         else:
+            self.nameWinsServer.value = config['global']['wins server']
             self.winsRadioGroup.value = "1"
-            
+            self.nameWinsServer.disabled = False
+        self.page.update()
+
         self.content= ft.Column(
                   controls = [    
                         ft.Row(
@@ -51,7 +56,7 @@ class Tab3(ft.Tab):
                                         controls = [
                                             ft.Text("WINS"),
                                             self.winsRadioGroup,
-                                            ft.TextField(label="Nombre",value=config['global']['wins server']),
+                                            self.nameWinsServer,
                                             ft.Checkbox(label="Obtener servidor WINS mediante DHCP"),
                                             ft.Checkbox(label="Utilizar WINS para resolucion de nombres de host")
                                         ],
@@ -90,4 +95,8 @@ class Tab3(ft.Tab):
                 )
     
     def onChangeWinsOptions(self,e):
-        print(self.winsRadioGroup.value)   
+        if self.winsRadioGroup.value == '1':
+            self.nameWinsServer.disabled = False 
+        else:
+            self.nameWinsServer.disabled = True    
+        self.page.update()    

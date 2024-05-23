@@ -182,6 +182,7 @@ class AlertEditResourse(ft.AlertDialog):
         self.actions_alignment="end"
         
     def loadProperties(self):
+        
         self.nameTextFieldElement = FieldTextEdit(self.nameElementsToedit,labelFieldText="Nombre de recurso",onClickIconBtnMethodName=None)   
         try:
             self.commentTextFieldElement = FieldTextEdit(textFieldVal=config[self.nameElementsToedit]['comment'],labelFieldText="Descripcion",onClickIconBtnMethodName=None)

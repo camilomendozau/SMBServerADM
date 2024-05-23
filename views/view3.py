@@ -1,10 +1,22 @@
 import flet as ft
+from config import config
 
 class Tab3(ft.Tab):
     def __init__(self):
         super().__init__()
         self.text="Identidad"
         self.icon=ft.icons.SUPERVISED_USER_CIRCLE_OUTLINED 
+        self.winsRadioGroup = ft.RadioGroup(content=ft.Column([
+                                                    ft.Radio(value="0", label="Compatibilidad con servidor WINS"),
+                                                    ft.Radio(value="1", label="Servidor WINS remoto"),
+                                                ]),
+                                            on_change=self.onChangeWinsOptions    
+                                        )
+        if config['global']['wins support'] == "Yes":
+            self.winsRadioGroup.value = "0"
+        else:
+            self.winsRadioGroup.value = "1"
+            
         self.content= ft.Column(
                   controls = [    
                         ft.Row(
@@ -14,7 +26,7 @@ class Tab3(ft.Tab):
                                     content = ft.Column(
                                         controls = [
                                             ft.Text("Configuracion basica"),
-                                                    ft.TextField(label="Nombre de grupo de trabajo o dominio",value="WORKGROUP"),
+                                                    ft.TextField(label="Nombre de grupo de trabajo o dominio",value=config['global']['workgroup']),
                                                     ft.Dropdown(
                                                         label="Controlador de dominio",
                                                         options=[
@@ -38,12 +50,8 @@ class Tab3(ft.Tab):
                                     ft.Column(
                                         controls = [
                                             ft.Text("WINS"),
-                                            ft.RadioGroup(content=ft.Column([
-                                                    ft.Radio(value="0", label="Compatibilidad con servidor WINS"),
-                                                    ft.Radio(value="1", label="Servidor WINS remoto"),
-                                                ])
-                                            ),
-                                            ft.TextField(label="Nombre"),
+                                            self.winsRadioGroup,
+                                            ft.TextField(label="Nombre",value=config['global']['wins server']),
                                             ft.Checkbox(label="Obtener servidor WINS mediante DHCP"),
                                             ft.Checkbox(label="Utilizar WINS para resolucion de nombres de host")
                                         ],
@@ -80,3 +88,6 @@ class Tab3(ft.Tab):
                         )
                    ]
                 )
+    
+    def onChangeWinsOptions(self,e):
+        print(self.winsRadioGroup.value)   

@@ -4,7 +4,6 @@ from views.view2 import Tab2
 from views.view3 import Tab3
 from views.view4 import Tab4
 # from views.view5 import tab5
-# from views.view6 import SharedTab
 
 def main(page: ft.Page):
     page.title = "Panel de Control SAMBA SERVER"
@@ -21,11 +20,10 @@ def main(page: ft.Page):
         expand=1,
     )
     page.add(tabsToRender)
-
     page.add(ft.Row(
                     controls=[
-                        ft.ElevatedButton("Cancelar",bgcolor=ft.colors.RED_800,disabled=True,icon=ft.icons.CANCEL),
-                        ft.ElevatedButton("Guardar cambios",bgcolor=ft.colors.GREEN_800,disabled=True,icon=ft.icons.SAVE)
+                        ft.ElevatedButton("Cancelar",bgcolor=ft.colors.RED_800,icon=ft.icons.CANCEL),
+                        ft.ElevatedButton("Guardar cambios",bgcolor=ft.colors.GREEN_800,icon=ft.icons.SAVE)
                     ],
                     alignment=ft.MainAxisAlignment.END,
                     vertical_alignment = ft.CrossAxisAlignment.END

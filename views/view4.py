@@ -19,7 +19,7 @@ class Tab4 (ft.Tab):
                                             ft.Text("Agregar nuevo usuario al Sistema Operativo"),
                                             ft.TextField(label="Nombre de Usuario",on_change=self.unableAddUserSOBtn),
                                             ft.TextField(label="Contraseña",password=True, can_reveal_password=True,on_change=self.unableAddUserSOBtn),
-                                            ft.TextField(label="Confirmar Contraseña",password=True, can_reveal_password=True),
+                                            ft.TextField(label="Confirmar Contraseña",password=True, can_reveal_password=True,on_change=self.unableAddUserSOBtn),
                                             self.addNewUserSOBtn
                                         ],
                                         horizontal_alignment = ft.CrossAxisAlignment.CENTER
@@ -126,10 +126,5 @@ class Tab4 (ft.Tab):
 
     def saveUserSMB(self):
         self.bannerToShow.showSucessfulMessage("Uusario añadido satisfactoriamente")
-
-            
-        #print(self.content.controls[1].content.content.controls[2].value,self.content.controls[1].content.content.controls[3].value)
-        
-
-
-                
+      
+        #print(self.content.controls[1].content.content.controls[2].value,self.content.controls[1].content.content.controls[3].value)              

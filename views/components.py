@@ -177,7 +177,7 @@ class MessageBanner (ft.Banner):
     def __init__(self,pageIn):
         super().__init__()
         self.page = pageIn
-        self.textMessage = ft.Text("")
+        self.textMessage = ft.Text("",color=ft.colors.BLACK)
         self.content=self.textMessage
         self.actions=[
             ft.TextButton("Ok",on_click=self.closeBanner),

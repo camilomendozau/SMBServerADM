@@ -1,5 +1,6 @@
 import flet as ft
 from views.messagenew import AlertNewResourse,AlertEditResourse
+from config import config
 
 class Tab2(ft.Tab):
     def __init__(self,pageIn):
@@ -14,6 +15,67 @@ class Tab2(ft.Tab):
         self.unableInvitedAccessCheckbox = ft.Checkbox(label="Permitir acceso de invitado")
         self.groupNameTextField = ft.TextField(label="Grupo permitido",width=400,value="users")
         self.sliderValue = ft.Text("0.0")
+        self.shareTable = ft.Row(
+                            controls = [ft.DataTable(                                    
+                                        border=ft.border.all(2, "red"),
+                                        border_radius=10,
+                                        vertical_lines=ft.border.BorderSide(3, "blue"),
+                                        horizontal_lines=ft.border.BorderSide(1, "green"),
+                                        sort_column_index=2,
+                                        sort_ascending=True,
+                                        heading_row_color=ft.colors.BLACK12,
+                                        show_checkbox_column=True,
+                                        data_row_color={"hovered": "0x30FF0000"},
+                                        divider_thickness=0,
+                                        columns=[
+                                            ft.DataColumn(ft.Text("Estado"),tooltip="Estado del recurso"),
+                                            ft.DataColumn(ft.Text("Solo Lectura")),
+                                            ft.DataColumn(ft.Text("Nombre"),on_sort=lambda e: print(f"{e.column_index}, {e.ascending}")),
+                                            ft.DataColumn(ft.Text("Ruta de Recurso")),
+                                            #ft.DataColumn(ft.Text("Acceso de invitado")),
+                                            ft.DataColumn(ft.Text("Comentario")),
+                                        ],
+                                        rows=[
+                                            # ft.DataRow(
+                                            #     cells=[
+                                            #         ft.DataCell(ft.Text("Habilitado",color=ft.colors.LIGHT_GREEN_ACCENT_400)),
+                                            #         ft.DataCell(ft.Text("Si")),
+                                            #         ft.DataCell(ft.Text("impresora")),
+                                            #         ft.DataCell(ft.Text("/var/lib/samba/drivers")),
+                                            #         ft.DataCell(ft.Text("No")),
+                                            #         ft.DataCell(ft.Text("Printer Drivers"))
+                                            #     ],
+                                            #     on_select_changed= self.unableBtnsControls
+                                            # ),
+                                            # ft.DataRow(
+                                            #     cells=[
+                                            #         ft.DataCell(ft.Text("Habilitado",color=ft.colors.LIGHT_GREEN_ACCENT_400)),
+                                            #         ft.DataCell(ft.Text("Si")),
+                                            #         ft.DataCell(ft.Text("Fotocopiadora")),
+                                            #         ft.DataCell(ft.Text("/var/lib/samba/drivers")),
+                                            #         ft.DataCell(ft.Text("No")),
+                                            #         ft.DataCell(ft.Text("Printer Drivers"))
+                                            #     ],
+                                            #     on_select_changed= self.unableBtnsControls
+                                            # ),
+                                            # ft.DataRow(
+                                            #     cells=[
+                                            #         ft.DataCell(ft.Text("Habilitado",color=ft.colors.LIGHT_GREEN_ACCENT_400)),
+                                            #         ft.DataCell(ft.Text("Si")),
+                                            #         ft.DataCell(ft.Text("Compartidos")),
+                                            #         ft.DataCell(ft.Text("/var/lib/samba/drivers")),
+                                            #         ft.DataCell(ft.Text("No")),
+                                            #         ft.DataCell(ft.Text("Printer Drivers")),
+                                            #     ],
+                                            #     on_select_changed= self.unableBtnsControls
+                                            # ),
+                                        ]
+
+                                    )
+                                ],
+                            alignment=ft.MainAxisAlignment.CENTER, 
+                        )
+        self.__generateShareTableData__()
         self.maxNumberShareResourcesSlider = ft.CupertinoSlider(
                                                     divisions=1,
                                                     max=100,
@@ -38,66 +100,7 @@ class Tab2(ft.Tab):
                                     ],
                             alignment=ft.MainAxisAlignment.SPACE_BETWEEN,            
                         ),
-                        ft.Row(
-                            controls = [ft.DataTable(                                    
-                                        border=ft.border.all(2, "red"),
-                                        border_radius=10,
-                                        vertical_lines=ft.border.BorderSide(3, "blue"),
-                                        horizontal_lines=ft.border.BorderSide(1, "green"),
-                                        sort_column_index=2,
-                                        sort_ascending=True,
-                                        heading_row_color=ft.colors.BLACK12,
-                                        show_checkbox_column=True,
-                                        data_row_color={"hovered": "0x30FF0000"},
-                                        divider_thickness=0,
-                                        columns=[
-                                            ft.DataColumn(ft.Text("Estado"),tooltip="Estado del recurso"),
-                                            ft.DataColumn(ft.Text("Solo Lectura")),
-                                            ft.DataColumn(ft.Text("Nombre"),on_sort=lambda e: print(f"{e.column_index}, {e.ascending}")),
-                                            ft.DataColumn(ft.Text("Ruta de Recurso")),
-                                            ft.DataColumn(ft.Text("Acceso de invitado")),
-                                            ft.DataColumn(ft.Text("Comentario")),
-                                        ],
-                                        rows=[
-                                            ft.DataRow(
-                                                cells=[
-                                                    ft.DataCell(ft.Text("Habilitado",color=ft.colors.LIGHT_GREEN_ACCENT_400)),
-                                                    ft.DataCell(ft.Text("Si")),
-                                                    ft.DataCell(ft.Text("impresora")),
-                                                    ft.DataCell(ft.Text("/var/lib/samba/drivers")),
-                                                    ft.DataCell(ft.Text("No")),
-                                                    ft.DataCell(ft.Text("Printer Drivers"))
-                                                ],
-                                                on_select_changed= self.unableBtnsControls
-                                            ),
-                                            ft.DataRow(
-                                                cells=[
-                                                    ft.DataCell(ft.Text("Habilitado",color=ft.colors.LIGHT_GREEN_ACCENT_400)),
-                                                    ft.DataCell(ft.Text("Si")),
-                                                    ft.DataCell(ft.Text("Fotocopiadora")),
-                                                    ft.DataCell(ft.Text("/var/lib/samba/drivers")),
-                                                    ft.DataCell(ft.Text("No")),
-                                                    ft.DataCell(ft.Text("Printer Drivers"))
-                                                ],
-                                                on_select_changed= self.unableBtnsControls
-                                            ),
-                                            ft.DataRow(
-                                                cells=[
-                                                    ft.DataCell(ft.Text("Habilitado",color=ft.colors.LIGHT_GREEN_ACCENT_400)),
-                                                    ft.DataCell(ft.Text("Si")),
-                                                    ft.DataCell(ft.Text("Compartidos")),
-                                                    ft.DataCell(ft.Text("/var/lib/samba/drivers")),
-                                                    ft.DataCell(ft.Text("No")),
-                                                    ft.DataCell(ft.Text("Printer Drivers")),
-                                                ],
-                                                on_select_changed= self.unableBtnsControls
-                                            ),
-                                        ]
-
-                                    )
-                                ],
-                            alignment=ft.MainAxisAlignment.CENTER, 
-                        ),    
+                        self.shareTable,
                         ft.Row(
                             controls = [self.addBtn,self.editBtn,self.deleteBtn],
                             alignment=ft.MainAxisAlignment.START
@@ -119,6 +122,32 @@ class Tab2(ft.Tab):
                             )
                         ) 
                     ], )  
+        
+    def __generateShareTableData__(self):
+        namesBaseList = ["homes","users","printers","groups","print$"]
+        for i in range(len(namesBaseList)):
+            rowToInner = ft.DataRow()
+            rowToInner.cells.append(ft.DataCell(ft.Text("Habilitado",color=ft.colors.LIGHT_GREEN_ACCENT_400)))
+            try:  
+                rowToInner.cells.append(ft.DataCell(ft.Text(config[namesBaseList[i]]['read only'])))
+            except:
+                rowToInner.cells.append(ft.DataCell(ft.Text("")))    
+            try:  
+                rowToInner.cells.append(ft.DataCell(ft.Text(namesBaseList[i])))
+            except:
+                rowToInner.cells.append(ft.DataCell(ft.Text("")))    
+            try:  
+                rowToInner.cells.append(ft.DataCell(ft.Text(config[namesBaseList[i]]['path'])))
+            except:
+                rowToInner.cells.append(ft.DataCell(ft.Text("")))    
+            try:  
+                rowToInner.cells.append(ft.DataCell(ft.Text(config[namesBaseList[i]]['comment'])))
+            except:
+                rowToInner.cells.append(ft.DataCell(ft.Text("")))    
+            rowToInner.on_select_changed = self.unableBtnsControls
+            self.shareTable.controls[0].rows.append(rowToInner)
+            
+                                            
     def openDialogNewResourse(self,e):
         newAlert = AlertNewResourse(self.page)
         self.page.dialog = newAlert

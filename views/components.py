@@ -249,6 +249,37 @@ class CheckboxElement(ft.Row):
         self.checkbox.disabled = True
         self.page.update()    
 
+
+class FilePickerElement(ft.Row):
+    def __init__(self,pageIn):
+        super().__init__()
+        self.page = pageIn
+        self.pick_files_dialog = ft.FilePicker(on_result=self.pickFilesResult)
+        self.page.overlay.append(self.pick_files_dialog)
+        self.selectedFolderTF = ft.TextField(label="Ruta del recurso compartido",width=500)
+        self.controls =[
+                        self.selectedFolderTF,
+                        ft.ElevatedButton(
+                            "Seleccionar\nubicacion",
+                            icon=ft.icons.SEARCH,
+                            on_click=lambda _: self.pick_files_dialog.get_directory_path()
+                           )    
+                       ]
+    def setPath(self,newPath):
+        self.selectedFolderTF.value = str(newPath)
+        self.page.update()    
+
+    def pickFilesResult(self,e: ft.FilePickerResultEvent):
+        if e.path:
+            self.selectedFolderTF.value = str(e.path)
+            #self.enableSaveBtn(e)
+        else:  
+            self.selectedFolderTF.error_text = "Debe seleccionar una carpeta"
+        self.selectedFolderTF.update() 
+
+    # def enableSaveBtn(self,e):
+    #     self.saveBtn.disabled = False
+    #     self.page.update()    
                                           
                                         
    

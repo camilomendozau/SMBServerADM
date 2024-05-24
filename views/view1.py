@@ -4,8 +4,7 @@ class Tab1(ft.Tab):
     def __init__(self):
         super().__init__()
         self.text="Inicio"
-        self.icon=ft.icons.RESTART_ALT
-        
+        self.icon=ft.icons.RESTART_ALT     
         self.stateServiceText = ft.Text("Activo",color=ft.colors.LIGHT_GREEN_ACCENT_700)
         self.initDropDown = ft.Dropdown( width=300,
                             options=[

@@ -36,42 +36,7 @@ class Tab2(ft.Tab):
                                             #ft.DataColumn(ft.Text("Acceso de invitado")),
                                             ft.DataColumn(ft.Text("Comentario")),
                                         ],
-                                        rows=[
-                                            # ft.DataRow(
-                                            #     cells=[
-                                            #         ft.DataCell(ft.Text("Habilitado",color=ft.colors.LIGHT_GREEN_ACCENT_400)),
-                                            #         ft.DataCell(ft.Text("Si")),
-                                            #         ft.DataCell(ft.Text("impresora")),
-                                            #         ft.DataCell(ft.Text("/var/lib/samba/drivers")),
-                                            #         ft.DataCell(ft.Text("No")),
-                                            #         ft.DataCell(ft.Text("Printer Drivers"))
-                                            #     ],
-                                            #     on_select_changed= self.unableBtnsControls
-                                            # ),
-                                            # ft.DataRow(
-                                            #     cells=[
-                                            #         ft.DataCell(ft.Text("Habilitado",color=ft.colors.LIGHT_GREEN_ACCENT_400)),
-                                            #         ft.DataCell(ft.Text("Si")),
-                                            #         ft.DataCell(ft.Text("Fotocopiadora")),
-                                            #         ft.DataCell(ft.Text("/var/lib/samba/drivers")),
-                                            #         ft.DataCell(ft.Text("No")),
-                                            #         ft.DataCell(ft.Text("Printer Drivers"))
-                                            #     ],
-                                            #     on_select_changed= self.unableBtnsControls
-                                            # ),
-                                            # ft.DataRow(
-                                            #     cells=[
-                                            #         ft.DataCell(ft.Text("Habilitado",color=ft.colors.LIGHT_GREEN_ACCENT_400)),
-                                            #         ft.DataCell(ft.Text("Si")),
-                                            #         ft.DataCell(ft.Text("Compartidos")),
-                                            #         ft.DataCell(ft.Text("/var/lib/samba/drivers")),
-                                            #         ft.DataCell(ft.Text("No")),
-                                            #         ft.DataCell(ft.Text("Printer Drivers")),
-                                            #     ],
-                                            #     on_select_changed= self.unableBtnsControls
-                                            # ),
-                                        ]
-
+                                        rows=[]
                                     )
                                 ],
                             alignment=ft.MainAxisAlignment.CENTER, 

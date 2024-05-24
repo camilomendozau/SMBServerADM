@@ -251,12 +251,12 @@ class CheckboxElement(ft.Row):
 
 
 class FilePickerElement(ft.Row):
-    def __init__(self,pageIn):
+    def __init__(self,pageIn,pathIn):
         super().__init__()
         self.page = pageIn
         self.pick_files_dialog = ft.FilePicker(on_result=self.pickFilesResult)
         self.page.overlay.append(self.pick_files_dialog)
-        self.selectedFolderTF = ft.TextField(label="Ruta del recurso compartido",width=500)
+        self.selectedFolderTF = ft.TextField(label="Ruta del recurso compartido",width=500,value=pathIn)
         self.controls =[
                         self.selectedFolderTF,
                         ft.ElevatedButton(

@@ -5,8 +5,7 @@ from views.view3 import Tab3
 from views.view4 import Tab4
 from config import config
 
-print(config)
-# from views.view5 import tab5
+# print(config)
 
 def main(page: ft.Page):
     page.title = "Panel de Control SAMBA SERVER"
@@ -25,8 +24,8 @@ def main(page: ft.Page):
     page.add(tabsToRender)
     page.add(ft.Row(
                     controls=[
-                        ft.ElevatedButton("Cancelar",bgcolor=ft.colors.RED_800,icon=ft.icons.CANCEL),
-                        ft.ElevatedButton("Guardar cambios",bgcolor=ft.colors.GREEN_800,icon=ft.icons.SAVE)
+                        ft.ElevatedButton("Cancelar",bgcolor=ft.colors.RED_300,icon=ft.icons.CANCEL),
+                        ft.ElevatedButton("Guardar cambios",bgcolor=ft.colors.GREEN_300,icon=ft.icons.SAVE)
                     ],
                     alignment=ft.MainAxisAlignment.END,
                     vertical_alignment = ft.CrossAxisAlignment.END

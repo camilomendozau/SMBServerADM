@@ -125,6 +125,6 @@ class Tab4 (ft.Tab):
         self.page.update()   
 
     def saveUserSMB(self):
-        self.bannerToShow.showSucessfulMessage("Uusario añadido satisfactoriamente")
+        self.bannerToShow.showSucessfulMessage("Usuario añadido satisfactoriamente")
       
         #print(self.content.controls[1].content.content.controls[2].value,self.content.controls[1].content.content.controls[3].value)              

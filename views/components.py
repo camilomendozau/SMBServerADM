@@ -86,7 +86,7 @@ class EditMask(ft.Row):
                    numbersOwner[i] = 2 ** potencia + numbersOwner[i]
                 potencia = potencia-1      
         return f'0{numbersOwner[0]}{numbersOwner[1]}{numbersOwner[2]}'       
-                                        
+                                    
     def unableSavelIconBtn(self,e):
         self.saveBtn.disabled = False
         self.page.update()
@@ -137,6 +137,8 @@ class FieldTextEdit(ft.Row):
         self.controls=[self.textField,self.iconBtn,self.saveBtn]  
     def getValue(self):
         return self.textField.value
+    def getLabel(self):
+        return self.textField.label
     def updateTextFieldValue(self,valueToUpdate):
         self.textField.value = str(valueToUpdate)
     def unableSaveBtn(self,e):
@@ -174,7 +176,12 @@ class MaskElement(ft.Row):
         self.textFieldContainer.updateTextFieldValue(self.tableEditContainer.generateNumberMask())
         self.tableEditContainer.visible = False
         self.textFieldContainer.visible = True
-        self.page.update()   
+        self.page.update()  
+
+    def getValue(self):
+        return self.textFieldContainer.getValue()
+    def getLabel(self):
+        return self.textFieldContainer.getLabel()
 
 class MessageBanner (ft.Banner):
     def __init__(self,pageIn):
@@ -188,7 +195,7 @@ class MessageBanner (ft.Banner):
     def showSucessfulMessage(self,message):
         self.bgcolor=ft.colors.GREEN_100
         self.textMessage.value = message
-        self.leading = ft.Icon(ft.icons.CHECK, color=ft.colors.GREEN_300, size=20)
+        self.leading = ft.Icon(ft.icons.CHECK, color=ft.colors.GREEN_600, size=20)
         self.page.banner.open = True
         self.page.update()
 
@@ -198,6 +205,13 @@ class MessageBanner (ft.Banner):
         self.leading = ft.Icon(ft.icons.WARNING_AMBER_ROUNDED, color=ft.colors.AMBER, size=20)
         self.page.banner.open = True
         self.page.update()   
+
+    def showErrorMessage(self,message):
+        self.bgcolor=ft.colors.RED_100
+        self.textMessage.value = message
+        self.leading = ft.Icon(ft.icons.ERROR, color=ft.colors.RED_600, size=20)
+        self.page.banner.open = True
+        self.page.update()          
 
     def closeBanner(self,e):
         self.page.banner.open = False
@@ -234,7 +248,10 @@ class CheckboxElement(ft.Row):
         else:
             self.checkbox.value = True
         self.page.update()    
-
+    def getValue(self):
+        return self.checkbox.value
+    def getLabel(self):
+        return self.checkbox.label
     def enableSaveBtn(self,e):
         self.saveBtn.disabled = False
         self.page.update()    
@@ -267,8 +284,14 @@ class FilePickerElement(ft.Row):
                        ]
     def setPath(self,newPath):
         self.selectedFolderTF.value = str(newPath)
-        self.page.update()    
+        self.page.update()   
 
+    def getValue(self):
+        return self.selectedFolderTF.value
+    
+    def getLabel(self):
+        return self.selectedFolderTF.label
+    
     def disable(self):
         self.disabled = True  
         self.page.update()    

@@ -21,7 +21,6 @@ class Tab3(ft.Tab):
             self.winsRadioGroup.value = "1"
             self.nameWinsServer.disabled = False
         self.page.update()
-
         self.content= ft.Column(
                   controls = [    
                         ft.Row(

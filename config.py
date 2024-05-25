@@ -1,7 +1,7 @@
 import configparser
 config = configparser.ConfigParser()
-config.read('/etc/samba/smb.conf')
-print(config.sections())
+config.read('smb.conf')
+# print(config.sections())
 
 # config = {
 #     "global": {

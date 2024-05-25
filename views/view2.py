@@ -1,5 +1,5 @@
 import flet as ft
-from views.messagenew import AlertNewResourse,AlertEditResourse
+from views.messagenew import AlertNewResourse,AlertEditResourse,AlertMessage
 from config import config
 
 class Tab2(ft.Tab):
@@ -10,7 +10,7 @@ class Tab2(ft.Tab):
         self.page = pageIn
         self.addBtn = ft.OutlinedButton(text="Añadir...", icon = ft.icons.ADD, on_click=self.openDialogNewResourse)
         self.editBtn = ft.OutlinedButton(text="Editar...", disabled=True, icon = ft.icons.EDIT_ROUNDED, on_click=self.openDialogEditResourse)
-        self.deleteBtn = ft.OutlinedButton(text="Suprimir", disabled=True, icon = ft.icons.DELETE)
+        self.deleteBtn = ft.OutlinedButton(text="Suprimir", disabled=True, icon = ft.icons.DELETE, on_click=self.deleteSelectedItem)
         self.enableSharedDirectoriesCheckbox = ft.Checkbox(label="Permitir a los usuarios compartir sus directorios",value=True, on_change=self.enableOptionsShareDirectories)
         self.enableInvitedAccessCheckbox = ft.Checkbox(label="Permitir acceso de invitado")
         self.groupNameTextField = ft.TextField(label="Grupo permitido",width=400,value="users")
@@ -56,16 +56,7 @@ class Tab2(ft.Tab):
         self.content=ft.Column(
                     controls=[
                         ft.Row(
-                            controls = [ft.Text("Recursos compartidos disponibles:"),
-                                    #    ft.Dropdown(
-                                    #                     width=300,
-                                    #                     options=[
-                                    #                         ft.dropdown.Option("Por nombre"),
-                                    #                         ft.dropdown.Option("Por fecha"),
-                                    #                     ],
-                                    #                     label="Filtrar",
-                                    #     )
-                                    ],
+                            controls = [ft.Text("Recursos compartidos disponibles:")],
                             alignment=ft.MainAxisAlignment.SPACE_AROUND           
                         ),
                         self.shareTable,
@@ -99,6 +90,7 @@ class Tab2(ft.Tab):
                     ], )  
         
     def __generateShareTableData__(self):
+        self.shareTable.controls[0].rows.clear()
         namesBaseList = config.sections()[1:]
         # ["homes","users","printers","groups","print$","profiles"]
         for i in range(len(namesBaseList)):
@@ -122,10 +114,19 @@ class Tab2(ft.Tab):
                 rowToInner.cells.append(ft.DataCell(ft.Text("")))    
             rowToInner.on_select_changed = self.enableBtnsControls
             self.shareTable.controls[0].rows.append(rowToInner)
-            
-                                            
+                                
     def openDialogNewResourse(self,e):
         newAlert = AlertNewResourse(self.page)
+        self.page.dialog = newAlert
+        newAlert.open = True
+        newAlert.getNameMethodOnDismiss(self.updateChangesOnTable)
+        self.page.update()
+
+    def deleteSelectedItem(self,e):
+        resourseName = self.currentRowToEdit[2].content.value
+        print("Recurso a eliminar",resourseName)   
+        newAlert = AlertMessage(self.page,f"Eliminar Recurso: {resourseName}","warning","Si suprime el recurso compartido, se perderan todos sus ajustes.\n ¿Seguro de que desea suprimirlo?")
+        newAlert.getNameMethodOnDismiss(self.updateChangesOnTable)
         self.page.dialog = newAlert
         newAlert.open = True
         self.page.update()
@@ -134,6 +135,12 @@ class Tab2(ft.Tab):
         editAlert = AlertEditResourse(self.page,self.currentRowToEdit[2].content.value)
         self.page.dialog = editAlert
         editAlert.open = True
+        editAlert.getNameMethodOnDismiss(self.updateChangesOnTable)
+        self.page.update()
+
+    def updateChangesOnTable(self,e):
+        # print("Dialogo cerrado")    
+        self.__generateShareTableData__()
         self.page.update()
 
     def enableOptionsShareDirectories(self,e):

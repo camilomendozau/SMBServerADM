@@ -139,6 +139,9 @@ class AlertNewResourse(ft.AlertDialog):
         textfield.focus()
         self.page.update()
 
+    def getNameMethodOnDismiss(self,methodName):
+        self.on_dismiss = methodName    
+
     def enableSaveBtn(self,e):
         self.saveBtn.disabled = False
         self.resourseNameTF.error_text = None
@@ -150,14 +153,51 @@ class AlertNewResourse(ft.AlertDialog):
         self.textError.value = ""
         self.page.update()      
 
+class AlertMessage(ft.AlertDialog):
+    def __init__(self,pageActual,title,type,message):
+        super().__init__()
+        self.page = pageActual
+        self.modal = True
+        self.title = ft.Text(title)
+        if type == "error":
+            self.content = ft.Row(
+                [ft.Icon(ft.icons.ERROR,color=ft.colors.RED_600,size=60),ft.Text(message)],
+            )
+        if type == "warning":
+            self.content = ft.Row(
+                [ft.Icon(ft.icons.WARNING,color=ft.colors.AMBER_600,size=60),ft.Text(message)],
+            )
+        if type == "success":
+            self.content = ft.Row(
+                [ft.Icon(ft.icons.CHECK_CIRCLE,color=ft.colors.GREEN_600,size=60),ft.Text(message)],
+            )
+        self.noBtn = ft.ElevatedButton(text="No",icon=ft.icons.CANCEL, color=ft.colors.RED_400, on_click=self.denyMessage)
+        self.okBtn = ft.ElevatedButton(text="Si", icon=ft.icons.CHECK, color=ft.colors.GREEN_400, on_click=self.acceptMessage)  
+          
+        self.actions = [self.okBtn,self.noBtn]
+        self.actions_alignment="end"
 
+    def denyMessage(self,e):
+        # print(e)
+        self.open = False
+        self.page.update()
+
+    def acceptMessage(self,e):
+        try:
+            config.remove_section(self.title.value.split(': ')[1])
+        except Exception as error:
+            print("Error al eliminar recurso:",error)    
+        self.open = False
+        self.page.update()    
+
+    def getNameMethodOnDismiss(self,methodName):
+        self.on_dismiss = methodName
 
 class AlertEditResourse(ft.AlertDialog):
     def __init__(self,pageActual,dataToEdit):
         super().__init__()
         self.page = pageActual
         self.resourceName = dataToEdit
-        #print(dataToEdit)
         self.modal=True
         self.title=ft.Row(
             [
@@ -166,10 +206,24 @@ class AlertEditResourse(ft.AlertDialog):
             ])
         self.optionsEnglishSpanish = {
             "Yes":True,
-            "No":False
+            "No":False,
+            "Descripcion":"comment",
+            "Ruta del recurso compartido":"path",
+            "Solo Lectura":"read only",
+            "Atributos DOS almacenados":"store dos attributes",
+            "Crear Mascara":"create mask",
+            "Mascara de Carpeta":"directory mask",
+            "Heredar ACL":"inherit acls",
+            "Navegable":"browseable"
         }
         self.cancelBtn = ft.ElevatedButton(text="Cancelar",on_click=self.cancelDialog, icon=ft.icons.CANCEL, color=ft.colors.RED_400)
         self.saveBtn = ft.ElevatedButton(text="Guardar",on_click=self.saveDialog, icon=ft.icons.SAVE, color=ft.colors.GREEN_600)
+        self.createNewPropertyBtn = ft.IconButton(
+                                        icon=ft.icons.ADD,
+                                        icon_color="blue400",
+                                        icon_size=40,
+                                        tooltip="Añadir nueva propiedad",
+                                    )
         self.content=ft.Column(
             controls=[
                 ft.Card(
@@ -182,11 +236,15 @@ class AlertEditResourse(ft.AlertDialog):
                     ),
                     width = 800,
                 ),
+                self.createNewPropertyBtn
             ],
         )
         self.loadProperties()
         self.actions=[self.cancelBtn,self.saveBtn]
         self.actions_alignment="end"
+
+    def getNameMethodOnDismiss(self,methodName):
+        self.on_dismiss = methodName
         
     def loadProperties(self):
         for property in list(config[self.resourceName].keys()):
@@ -216,5 +274,17 @@ class AlertEditResourse(ft.AlertDialog):
         self.page.update()
 
     def saveDialog(self,e):
+        # resourseElementsShowing = self.content.controls[0].content.content.controls
+        # for propertyElement in resourseElementsShowing:
+        #     #print(self.optionsEnglishSpanish[propertyElement.getLabel()] ,propertyElement.getValue())
+        #     try:
+        #         if self.optionsEnglishSpanish[propertyElement.getLabel()] in config[self.resourceName]:
+        #             print("guardar valor existente:",self.resourceName,self.optionsEnglishSpanish[propertyElement.getLabel()],propertyElement.getValue(),sep='-')
+        #             config[self.resourceName][self.optionsEnglishSpanish[propertyElement.getLabel()]] = propertyElement.getValue()
+        #         else:
+        #             print("guardar nueva propiedad:",self.resourceName,self.optionsEnglishSpanish[propertyElement.getLabel()],propertyElement.getValue(),sep="-")
+        #             config.set(self.resourceName,self.optionsEnglishSpanish[propertyElement.getLabel()],propertyElement.getValue())    
+        #     except Exception as error:
+        #         print("Error al guardar propiedades:",error)    
         self.open = False
         self.page.update()  

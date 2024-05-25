@@ -3,6 +3,7 @@ from views.view1 import Tab1
 from views.view2 import Tab2
 from views.view3 import Tab3
 from views.view4 import Tab4
+from views.components import MessageBanner
 from config import config
 
 # print(config)
@@ -15,14 +16,19 @@ def main(page: ft.Page):
     page.auto_scroll = True
     page.window_width = 1300
     page.window_height = 850
+    page.banner = MessageBanner(pageIn=page)
 
     def saveGeneralChanges(e):
         print("Cambios generales realizados")
         try:
             with open('smb.conf', 'w') as configfile:
                 config.write(configfile)
+            page.banner.showSucessfulMessage("Datos guardados satisfactoriamente")
+            page.update()
         except Exception as e:
-            print("NO se pudo guardar el archivo:",e)
+            page.banner.showErrorMessage("ERROR al guardar los cambios")
+            print("No se pudo guardar el archivo:",e)
+            page.update()
 
     tabsToRender = ft.Tabs(
         selected_index=1,

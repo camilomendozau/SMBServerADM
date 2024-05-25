@@ -12,8 +12,17 @@ def main(page: ft.Page):
     page.vertical_alignment = ft.MainAxisAlignment.CENTER
     page.adaptive = False
     page.window_resizable = False
+    page.auto_scroll = True
     page.window_width = 1300
     page.window_height = 850
+
+    def saveGeneralChanges(e):
+        print("Cambios generales realizados")
+        try:
+            with open('smb.conf', 'w') as configfile:
+                config.write(configfile)
+        except Exception as e:
+            print("NO se pudo guardar el archivo:",e)
 
     tabsToRender = ft.Tabs(
         selected_index=1,
@@ -24,13 +33,13 @@ def main(page: ft.Page):
     page.add(tabsToRender)
     page.add(ft.Row(
                     controls=[
-                        ft.ElevatedButton("Cancelar",bgcolor=ft.colors.RED_300,icon=ft.icons.CANCEL),
-                        ft.ElevatedButton("Guardar cambios",bgcolor=ft.colors.GREEN_300,icon=ft.icons.SAVE)
+                        #ft.ElevatedButton("Cerar",bgcolor=ft.colors.RED_300,icon=ft.icons.CANCEL),
+                        ft.ElevatedButton("Guardar cambios",bgcolor=ft.colors.GREEN_300,icon=ft.icons.SAVE,on_click=saveGeneralChanges)
                     ],
                     alignment=ft.MainAxisAlignment.END,
                     vertical_alignment = ft.CrossAxisAlignment.END
                 )
-    )
+    )    
 
 
 ft.app(target=main)

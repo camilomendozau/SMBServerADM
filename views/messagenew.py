@@ -1,12 +1,6 @@
 import flet as ft
 from config import config
 from views.components import MaskElement,FieldTextEdit,CheckboxElement,FilePickerElement
-newResourse = {
-    "path":"",
-    "name":"",
-    "type":""
-}
-
 
 class AlertNewResourse(ft.AlertDialog):
     def __init__(self,pageActual):
@@ -14,13 +8,10 @@ class AlertNewResourse(ft.AlertDialog):
         self.page = pageActual
         self.modal=True
         self.title=ft.Text("Crear nuevo recurso compartido")
-        self.pick_files_dialog = ft.FilePicker(on_result=self.pickFilesResult)
-        self.selectedFolderTF = ft.TextField(label="Ruta del recurso compartido")
-        self.page.overlay.append(self.pick_files_dialog)
         self.cancelBtn = ft.ElevatedButton(text="Cancelar",on_click=self.cancelDialog, icon=ft.icons.CANCEL, color=ft.colors.RED_400)
         self.saveBtn = ft.ElevatedButton(text="Guardar",on_click=self.saveDialog, icon=ft.icons.SAVE, color=ft.colors.GREEN_600, disabled = True)
-        self.resourseNameTF = ft.TextField(label="Nombre del recurso", width=500,on_change=self.unableSaveBtn)
-        self.descriptionTF = ft.TextField(label="Descripción", width=500,on_change=self.unableSaveBtn)
+        self.resourseNameTF = ft.TextField(label="Nombre del recurso", width=500,on_change=self.enableSaveBtn)
+        self.descriptionTF = ft.TextField(label="Descripción", width=500,on_change=self.enableSaveBtn)
         self.textError = ft.Text("", color = ft.colors.RED_500)
         self.typeResourseRadioGroup = ft.RadioGroup(
                                         content=ft.Row([
@@ -32,8 +23,17 @@ class AlertNewResourse(ft.AlertDialog):
                                         ],
                                         vertical_alignment = ft.CrossAxisAlignment.CENTER
                                     ),
-                                    on_change = self.unableSaveBtn
+                                    value = 0,
+                                    on_change = self.enableAndDisabledElementsBecauseResourseType
                                 )
+        self.readOnlyCheckBox = ft.Checkbox(label="Solo Lectura",on_change=self.enableSaveBtn)
+        self.inheritACLCheckBox = ft.Checkbox(label="Heredar las ACL",on_change=self.enableSaveBtn, value=True)
+        self.btrfsCheckBox = ft.Checkbox(label="Utilizar caracteristicas de BtrFS",on_change=self.enableSaveBtn)
+        self.filePicker = FilePickerElement(self.page,"/var/tmp")
+        self.optionsEnglishSpanish = {
+            True:"Yes",
+            False:"No"
+        }
         self.content=ft.Column(
             controls=[
                 ft.Card(
@@ -56,24 +56,13 @@ class AlertNewResourse(ft.AlertDialog):
                             controls=[
                                 ft.Text("Tipo de recurso compartido"),
                                 self.typeResourseRadioGroup,           
-                                ft.Column(
-                                    [
-                                        self.selectedFolderTF,
-                                        ft.ElevatedButton(
-                                            "Seleccionar ubicacion",
-                                            icon=ft.icons.SEARCH,
-                                            on_click=lambda _: self.pick_files_dialog.get_directory_path()
-                                        )    
-                                    ],
-                                    alignment=ft.MainAxisAlignment.CENTER,
-                                    horizontal_alignment=ft.CrossAxisAlignment.END                      
-                                ),
+                                self.filePicker,
                                 ft.Column(
                                     controls= [
-                                        ft.Checkbox(label="Solo Lectura",on_change=self.unableSaveBtn),
-                                        ft.Checkbox(label="Heredar las ACL",on_change=self.unableSaveBtn, value=True),
-                                        # ft.Checkbox(label="Exponer instantaneas", disabled=True,on_change=self.unableSaveBtn),
-                                        # ft.Checkbox(label="Utilizar caracteristicas de BtrFS",on_change=self.unableSaveBtn)
+                                        self.readOnlyCheckBox,
+                                        self.inheritACLCheckBox,
+                                        # ft.Checkbox(label="Exponer instantaneas", disabled=True,on_change=self.enableSaveBtn),
+                                        self.btrfsCheckBox
                                     ]
                                 )
                             ],
@@ -89,19 +78,58 @@ class AlertNewResourse(ft.AlertDialog):
         self.actions = [self.cancelBtn,self.saveBtn]
         self.actions_alignment="end"
 
+    def enableAndDisabledElementsBecauseResourseType(self,e):
+        if self.typeResourseRadioGroup.value == "0":
+            self.readOnlyCheckBox.disabled = False
+            self.inheritACLCheckBox.disabled = False
+            self.btrfsCheckBox.disabled = True
+            self.filePicker.enable()
+        else:
+            self.readOnlyCheckBox.disabled = True
+            self.inheritACLCheckBox.disabled = True
+            self.btrfsCheckBox.disabled = False
+            self.filePicker.disable()
+        self.saveBtn.disabled = False
+        self.page.update()    
+
     def cancelDialog(self,e):
         self.open = False
         self.page.update()
 
     def saveDialog(self,e):
+        print(self.typeResourseRadioGroup.value)
         if self.resourseNameTF.value == "":
             self.__textFieldEmpty__(self.resourseNameTF)
-        elif self.selectedFolderTF.value == "":
-            self.__textFieldEmpty__(self.selectedFolderTF)   
+        elif self.descriptionTF.value == "":
+            self.__textFieldEmpty__(self.descriptionTF)    
+        elif self.filePicker.selectedFolderTF.value == "":
+            self.__textFieldEmpty__(self.filePicker.selectedFolderTF)   
         elif self.typeResourseRadioGroup.value == None:
             self.textError.value = "Debe elegir una opcion"
             self.page.update()
         else:
+            try:
+                if int(self.typeResourseRadioGroup.value) == 0:
+                    # print("Recurso carpeta guadado")
+                    config.add_section(str(self.resourseNameTF.value))
+                    config.set(str(self.resourseNameTF.value),"comment",str(self.descriptionTF.value))
+                    config.set(str(self.resourseNameTF.value),"inherit acls",self.optionsEnglishSpanish[self.inheritACLCheckBox.value])
+                    config.set(str(self.resourseNameTF.value),"path",str(self.filePicker.selectedFolderTF.value))
+                    config.set(str(self.resourseNameTF.value),"read only",self.optionsEnglishSpanish[self.readOnlyCheckBox.value])
+                    if self.btrfsCheckBox.value == True:
+                        config.set(str(self.resourseNameTF.value),"vfs objects","btfrs")
+                    else:
+                        config.set(str(self.resourseNameTF.value),"vfs objects","")    
+                if int(self.typeResourseRadioGroup.value) == 1:
+                    # print("Recurso impresora guardado")
+                    config.add_section(str(self.resourseNameTF.value))
+                    config.set(str(self.resourseNameTF.value),"comment",str(self.descriptionTF.value))
+                    config.set(str(self.resourseNameTF.value),"path",str(self.filePicker.selectedFolderTF.value))
+                    config.set(str(self.resourseNameTF.value),"printable","Yes")    
+            except Exception as e:
+                print("NO se pudo guardar:",e)
+
+            print(config.sections())   
             self.open = False
             self.page.update()
 
@@ -111,22 +139,16 @@ class AlertNewResourse(ft.AlertDialog):
         textfield.focus()
         self.page.update()
 
-    def unableSaveBtn(self,e):
+    def enableSaveBtn(self,e):
         self.saveBtn.disabled = False
         self.resourseNameTF.error_text = None
         self.resourseNameTF.focused_border_color = None
-        self.selectedFolderTF.error_text = None
-        self.selectedFolderTF.focused_border_color = None
+        self.descriptionTF.error_text = None
+        self.descriptionTF.focused_border_color = None
+        # self.filePicker.selectedFolderTF.error_text = None
+        # self.filePicker.selectedFolderTF.focused_border_color = None
         self.textError.value = ""
         self.page.update()      
-
-    def pickFilesResult(self,e: ft.FilePickerResultEvent):
-        if e.path:
-            self.selectedFolderTF.value = e.path
-            self.unableSaveBtn(e)
-        else:  
-            self.selectedFolderTF.error_text = "Debe seleccionar una carpeta"
-        self.selectedFolderTF.update() 
 
 
 

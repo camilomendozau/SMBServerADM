@@ -11,8 +11,8 @@ class Tab2(ft.Tab):
         self.addBtn = ft.OutlinedButton(text="Añadir...", icon = ft.icons.ADD, on_click=self.openDialogNewResourse)
         self.editBtn = ft.OutlinedButton(text="Editar...", disabled=True, icon = ft.icons.EDIT_ROUNDED, on_click=self.openDialogEditResourse)
         self.deleteBtn = ft.OutlinedButton(text="Suprimir", disabled=True, icon = ft.icons.DELETE)
-        self.unableSharedDirectoriesCheckbox = ft.Checkbox(label="Permitir a los usuarios compartir sus directorios",value=True, on_change=self.unableOptionsShareDirectories)
-        self.unableInvitedAccessCheckbox = ft.Checkbox(label="Permitir acceso de invitado")
+        self.enableSharedDirectoriesCheckbox = ft.Checkbox(label="Permitir a los usuarios compartir sus directorios",value=True, on_change=self.enableOptionsShareDirectories)
+        self.enableInvitedAccessCheckbox = ft.Checkbox(label="Permitir acceso de invitado")
         self.groupNameTextField = ft.TextField(label="Grupo permitido",width=400,value="users")
         self.sliderValue = ft.Text("0")
         self.currentRowToEdit = ""
@@ -78,8 +78,8 @@ class Tab2(ft.Tab):
                                 content=ft.Column(
                                     controls= [
                                         ft.Text("Recursos compartidos por los usuarios"),
-                                        self.unableSharedDirectoriesCheckbox,
-                                        self.unableInvitedAccessCheckbox,
+                                        self.enableSharedDirectoriesCheckbox,
+                                        self.enableInvitedAccessCheckbox,
                                         ft.Row(
                                             [
                                                 self.groupNameTextField,
@@ -120,7 +120,7 @@ class Tab2(ft.Tab):
                 rowToInner.cells.append(ft.DataCell(ft.Text(config[namesBaseList[i]]['comment'])))
             except:
                 rowToInner.cells.append(ft.DataCell(ft.Text("")))    
-            rowToInner.on_select_changed = self.unableBtnsControls
+            rowToInner.on_select_changed = self.enableBtnsControls
             self.shareTable.controls[0].rows.append(rowToInner)
             
                                             
@@ -136,14 +136,14 @@ class Tab2(ft.Tab):
         editAlert.open = True
         self.page.update()
 
-    def unableOptionsShareDirectories(self,e):
-        if self.unableSharedDirectoriesCheckbox.value:
-            self.unableInvitedAccessCheckbox.disabled = False
+    def enableOptionsShareDirectories(self,e):
+        if self.enableSharedDirectoriesCheckbox.value:
+            self.enableInvitedAccessCheckbox.disabled = False
             self.groupNameTextField.disabled = False
             self.maxNumberShareResourcesSlider.disabled= False
             self.sliderValue.disabled = False
         else:
-            self.unableInvitedAccessCheckbox.disabled = True
+            self.enableInvitedAccessCheckbox.disabled = True
             self.groupNameTextField.disabled = True
             self.maxNumberShareResourcesSlider.disabled = True
             self.sliderValue.disabled = True
@@ -153,7 +153,7 @@ class Tab2(ft.Tab):
         self.sliderValue.value = str(e.control.value)
         self.update()
 
-    def unableBtnsControls(self,e):
+    def enableBtnsControls(self,e):
         if not e.control.selected:
             if self.rowsSelected == 0:
                 self.rowsSelected = self.rowsSelected + 1

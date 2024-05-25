@@ -269,6 +269,14 @@ class FilePickerElement(ft.Row):
         self.selectedFolderTF.value = str(newPath)
         self.page.update()    
 
+    def disable(self):
+        self.disabled = True  
+        self.page.update()    
+
+    def enable(self):
+        self.disabled = False
+        self.page.update()    
+
     def pickFilesResult(self,e: ft.FilePickerResultEvent):
         if e.path:
             self.selectedFolderTF.value = str(e.path)
@@ -276,6 +284,14 @@ class FilePickerElement(ft.Row):
         else:  
             self.selectedFolderTF.error_text = "Debe seleccionar una carpeta"
         self.selectedFolderTF.update() 
+
+    def invisible(self):
+        self.visible = False
+        self.page.update()    
+    
+    # def setonchange(self,nameMethodOnChange):
+    #     self.selectedFolderTF.on_change = nameMethodOnChange
+    #     self.page.update()
 
     # def enableSaveBtn(self,e):
     #     self.saveBtn.disabled = False

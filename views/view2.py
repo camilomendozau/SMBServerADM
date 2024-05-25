@@ -35,7 +35,7 @@ class Tab2(ft.Tab):
                                             ft.DataColumn(ft.Text("Solo Lectura")),
                                             ft.DataColumn(ft.Text("Nombre"),on_sort=lambda e: print(f"{e.column_index}, {e.ascending}")),
                                             ft.DataColumn(ft.Text("Ruta de Recurso")),
-                                            #ft.DataColumn(ft.Text("Acceso de invitado")),
+                                            ft.DataColumn(ft.Text("Acceso de invitado")),
                                             ft.DataColumn(ft.Text("Comentario")),
                                         ],
                                         rows=[]
@@ -126,7 +126,11 @@ class Tab2(ft.Tab):
             try:  
                 rowToInner.cells.append(ft.DataCell(ft.Text(config[namesBaseList[i]]['path'])))
             except:
-                rowToInner.cells.append(ft.DataCell(ft.Text("")))    
+                rowToInner.cells.append(ft.DataCell(ft.Text("")))  
+            try:
+                rowToInner.cells.append(ft.DataCell(ft.Text(config[namesBaseList[i]]['guest ok'])))
+            except:
+                rowToInner.cells.append(ft.DataCell(ft.Text("No")))
             try:  
                 rowToInner.cells.append(ft.DataCell(ft.Text(config[namesBaseList[i]]['comment'])))
             except:
@@ -137,9 +141,15 @@ class Tab2(ft.Tab):
     def enableGuestAccess(self,e):
         resourseName = self.currentRowToEdit[2].content.value
         if "guest ok" in config[resourseName]:
-            config[resourseName]["guest ok"] = "Yes" if config[resourseName]["guest ok"] == "No" else "No"
+            if config[resourseName]["guest ok"] == "Yes":
+                config[resourseName]["guest ok"] = "No"
+                self.currentRowToEdit[4].content.value = "No"
+            else:
+                config[resourseName]["guest ok"] = "Yes"
+                self.currentRowToEdit[4].content.value = "Yes"
         else:    
             config.set(resourseName,"guest ok","Yes")
+        self.page.update()    
             
     def enableResourse(self,e):
         if self.currentRowToEdit[0].content.value == "Habilitado":

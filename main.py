@@ -5,8 +5,7 @@ from views.view3 import Tab3
 from views.view4 import Tab4
 from views.components import MessageBanner
 from config import config
-
-# print(config)
+import subprocess as sp
 
 def main(page: ft.Page):
     page.title = "Panel de Control SAMBA SERVER"

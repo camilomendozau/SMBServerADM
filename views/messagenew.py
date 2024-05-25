@@ -214,7 +214,9 @@ class AlertEditResourse(ft.AlertDialog):
             "Crear Mascara":"create mask",
             "Mascara de Carpeta":"directory mask",
             "Heredar ACL":"inherit acls",
-            "Navegable":"browseable"
+            "Navegable":"browseable",
+            True:"Yes",
+            False:"No"
         }
         self.cancelBtn = ft.ElevatedButton(text="Cancelar",on_click=self.cancelDialog, icon=ft.icons.CANCEL, color=ft.colors.RED_400)
         self.saveBtn = ft.ElevatedButton(text="Guardar",on_click=self.saveDialog, icon=ft.icons.SAVE, color=ft.colors.GREEN_600)
@@ -274,17 +276,23 @@ class AlertEditResourse(ft.AlertDialog):
         self.page.update()
 
     def saveDialog(self,e):
-        # resourseElementsShowing = self.content.controls[0].content.content.controls
-        # for propertyElement in resourseElementsShowing:
-        #     #print(self.optionsEnglishSpanish[propertyElement.getLabel()] ,propertyElement.getValue())
-        #     try:
-        #         if self.optionsEnglishSpanish[propertyElement.getLabel()] in config[self.resourceName]:
-        #             print("guardar valor existente:",self.resourceName,self.optionsEnglishSpanish[propertyElement.getLabel()],propertyElement.getValue(),sep='-')
-        #             config[self.resourceName][self.optionsEnglishSpanish[propertyElement.getLabel()]] = propertyElement.getValue()
-        #         else:
-        #             print("guardar nueva propiedad:",self.resourceName,self.optionsEnglishSpanish[propertyElement.getLabel()],propertyElement.getValue(),sep="-")
-        #             config.set(self.resourceName,self.optionsEnglishSpanish[propertyElement.getLabel()],propertyElement.getValue())    
-        #     except Exception as error:
-        #         print("Error al guardar propiedades:",error)    
+        resourseElementsShowing = self.content.controls[0].content.content.controls
+        for propertyElement in resourseElementsShowing:
+            #print(self.optionsEnglishSpanish[propertyElement.getLabel()] ,propertyElement.getValue())
+            try:
+                if self.optionsEnglishSpanish[propertyElement.getLabel()] in config[self.resourceName]:
+                    #print("guardar valor existente:",self.resourceName,self.optionsEnglishSpanish[propertyElement.getLabel()],propertyElement.getValue(),sep='-')
+                    if isinstance(propertyElement.getValue(),bool):
+                        config[self.resourceName][self.optionsEnglishSpanish[propertyElement.getLabel()]] = self.optionsEnglishSpanish[propertyElement.getValue()]
+                    else:
+                        config.set(self.resourceName,self.optionsEnglishSpanish[propertyElement.getLabel()],propertyElement.getValue())
+                else:
+                    #print("guardar nueva propiedad:",self.resourceName,self.optionsEnglishSpanish[propertyElement.getLabel()],propertyElement.getValue(),sep="-")
+                    if isinstance(propertyElement.getValue(),bool):
+                        config.set(self.resourceName,self.optionsEnglishSpanish[propertyElement.getLabel()],self.optionsEnglishSpanish[propertyElement.getValue()])
+                    else:
+                        config.set(self.resourceName,self.optionsEnglishSpanish[propertyElement.getLabel()],propertyElement.getValue())
+            except Exception as error:
+                print("Error al guardar propiedades:",error)            
         self.open = False
         self.page.update()  

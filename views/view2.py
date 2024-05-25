@@ -112,6 +112,7 @@ class Tab2(ft.Tab):
                 rowToInner.cells.append(ft.DataCell(ft.Text(config[namesBaseList[i]]['comment'])))
             except:
                 rowToInner.cells.append(ft.DataCell(ft.Text("")))    
+            rowToInner.selected = False    
             rowToInner.on_select_changed = self.enableBtnsControls
             self.shareTable.controls[0].rows.append(rowToInner)
                                 
@@ -139,8 +140,14 @@ class Tab2(ft.Tab):
         self.page.update()
 
     def updateChangesOnTable(self,e):
-        # print("Dialogo cerrado")    
+        # print("Dialogo cerrado")  
+        self.rowsSelected = 0  
+        #print(self.rowsSelected)
+        self.currentRowToEdit = ""
         self.__generateShareTableData__()
+        self.addBtn.disabled = False
+        self.editBtn.disabled = True
+        self.deleteBtn.disabled = True
         self.page.update()
 
     def enableOptionsShareDirectories(self,e):
@@ -162,6 +169,7 @@ class Tab2(ft.Tab):
 
     def enableBtnsControls(self,e):
         if not e.control.selected:
+            #print("Evento seleccionado no")
             if self.rowsSelected == 0:
                 self.rowsSelected = self.rowsSelected + 1
                 self.currentRowToEdit = e.control.cells
@@ -184,9 +192,10 @@ class Tab2(ft.Tab):
                 e.control.selected = True       
                 self.addBtn.disabled = True
                 self.editBtn.disabled = True
-                self.deleteBtn.disabled = False
+                self.deleteBtn.disabled = True
                 self.update()
         elif e.control.selected:
+            #print("Evento seleccionado ok")
             if self.rowsSelected == 0:
                 #print(e.control.cells[2].content.value,self.rowsSelected, sep='|')
                 e.control.selected = True
@@ -207,8 +216,8 @@ class Tab2(ft.Tab):
                 #print(e.control.cells[2].content.value,self.rowsSelected, sep='|')
                 e.control.selected = False
                 self.addBtn.disabled = True
-                self.editBtn.disabled = False
-                self.deleteBtn.disabled = False
+                self.editBtn.disabled = True
+                self.deleteBtn.disabled = True
                 self.update()
 
             

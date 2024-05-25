@@ -1,6 +1,6 @@
 import flet as ft
 from views.messagenew import AlertNewResourse,AlertEditResourse,AlertMessage
-from config import config
+from config import config,optionsEnglishSpanish
 
 class Tab2(ft.Tab):
     def __init__(self,pageIn):
@@ -11,9 +11,11 @@ class Tab2(ft.Tab):
         self.addBtn = ft.OutlinedButton(text="Añadir...", icon = ft.icons.ADD, on_click=self.openDialogNewResourse)
         self.editBtn = ft.OutlinedButton(text="Editar...", disabled=True, icon = ft.icons.EDIT_ROUNDED, on_click=self.openDialogEditResourse)
         self.deleteBtn = ft.OutlinedButton(text="Suprimir", disabled=True, icon = ft.icons.DELETE, on_click=self.deleteSelectedItem)
+        self.guestAccessBtn = ft.OutlinedButton(text="Acceso de Invitado", disabled=True, icon = ft.icons.IOS_SHARE, on_click=self.enableGuestAccess)
+        self.toggleStatusBtn = ft.OutlinedButton(text="Cambiar estado", disabled=True, icon = ft.icons.POWER_SETTINGS_NEW, on_click=self.enableResourse)
         self.enableSharedDirectoriesCheckbox = ft.Checkbox(label="Permitir a los usuarios compartir sus directorios",value=True, on_change=self.enableOptionsShareDirectories)
         self.enableInvitedAccessCheckbox = ft.Checkbox(label="Permitir acceso de invitado")
-        self.groupNameTextField = ft.TextField(label="Grupo permitido",width=400,value="users")
+        self.loadProperties()
         self.sliderValue = ft.Text("0")
         self.currentRowToEdit = ""
         self.shareTable = ft.Row(
@@ -61,8 +63,22 @@ class Tab2(ft.Tab):
                         ),
                         self.shareTable,
                         ft.Row(
-                            controls = [self.addBtn,self.editBtn,self.deleteBtn],
-                            alignment=ft.MainAxisAlignment.START
+                            controls = [
+                                ft.Row(
+                                    [
+                                        self.addBtn,
+                                        self.editBtn,
+                                        self.deleteBtn
+                                    ]
+                                ),
+                                ft.Row(
+                                    [
+                                        self.guestAccessBtn,
+                                        self.toggleStatusBtn
+                                    ]
+                                ) 
+                            ],
+                            alignment=ft.MainAxisAlignment.SPACE_BETWEEN
                         ),
                         ft.Card(
                             content=ft.Container(
@@ -88,7 +104,10 @@ class Tab2(ft.Tab):
                             )
                         ) 
                     ], )  
-        
+    def loadProperties(self):
+        self.groupNameTextField = ft.TextField(label="Grupo permitido",width=400,value = "users")
+        if 'usershare allow guest' in config['global']:
+            self.enableSharedDirectoriesCheckbox = ft.TextField(label="Grupo permitido",width=400,value = optionsEnglishSpanish[config['global']['usershare allow guest']])
     def __generateShareTableData__(self):
         self.shareTable.controls[0].rows.clear()
         namesBaseList = config.sections()[1:]
@@ -115,7 +134,22 @@ class Tab2(ft.Tab):
             rowToInner.selected = False    
             rowToInner.on_select_changed = self.enableBtnsControls
             self.shareTable.controls[0].rows.append(rowToInner)
-                                
+    def enableGuestAccess(self,e):
+        resourseName = self.currentRowToEdit[2].content.value
+        if "guest ok" in config[resourseName]:
+            config[resourseName]["guest ok"] = "Yes" if config[resourseName]["guest ok"] == "No" else "No"
+        else:    
+            config.set(resourseName,"guest ok","Yes")
+            
+    def enableResourse(self,e):
+        if self.currentRowToEdit[0].content.value == "Habilitado":
+            self.currentRowToEdit[0].content.value = "Inhabilitado"
+            self.currentRowToEdit[0].content.color= ft.colors.RED_300
+        else:
+            self.currentRowToEdit[0].content.value = "Habilitado"
+            self.currentRowToEdit[0].content.color = ft.colors.LIGHT_GREEN_ACCENT_400
+        self.page.update()
+
     def openDialogNewResourse(self,e):
         newAlert = AlertNewResourse(self.page)
         self.page.dialog = newAlert
@@ -177,6 +211,8 @@ class Tab2(ft.Tab):
                 self.addBtn.disabled = True                    
                 self.editBtn.disabled = False
                 self.deleteBtn.disabled = False
+                self.guestAccessBtn.disabled = False
+                self.toggleStatusBtn.disabled = False
                 self.update()
             elif self.rowsSelected == 1:  
                 self.rowsSelected = self.rowsSelected + 1

@@ -20,8 +20,9 @@ def main(page: ft.Page):
     def saveGeneralChanges(e):
         print("Cambios generales realizados")
         try:
-            with open('smb.conf', 'w') as configfile:
-                config.write(configfile)
+            with sh.contrib.sudo:
+                with open('smb.conf', 'w') as configfile:
+                    config.write(configfile)
             page.banner.showSucessfulMessage("Datos guardados satisfactoriamente")
             page.update()
         except PermissionError as e:
@@ -29,9 +30,9 @@ def main(page: ft.Page):
             print("No se pudo guardar el archivo:",e)
             page.update()
 
-        # Usar sudo para mover el archivo temporal a su ubicación final
+        # # Usar sudo para mover el archivo temporal a su ubicación final
         try:
-            sh.sudo.mv("smb.conf", "/etc/samba/smb.conf")
+            sh.sudo.cp("smb.conf", "/etc/samba/smb.conf")
             print("Configuration changes saved successfully.")
         except sh.ErrorReturnCode as e:
             print(f"Error saving configuration with sudo: {e}")

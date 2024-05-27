@@ -13,10 +13,8 @@ class Tab2(ft.Tab):
         self.deleteBtn = ft.OutlinedButton(text="Suprimir", disabled=True, icon = ft.icons.DELETE, on_click=self.deleteSelectedItem)
         self.guestAccessBtn = ft.OutlinedButton(text="Acceso de Invitado", disabled=True, icon = ft.icons.IOS_SHARE, on_click=self.enableGuestAccess)
         self.toggleStatusBtn = ft.OutlinedButton(text="Cambiar estado", disabled=True, icon = ft.icons.POWER_SETTINGS_NEW, on_click=self.enableResourse)
-        self.enableSharedDirectoriesCheckbox = ft.Checkbox(label="Permitir a los usuarios compartir sus directorios",value=True, on_change=self.enableOptionsShareDirectories)
-        self.enableInvitedAccessCheckbox = ft.Checkbox(label="Permitir acceso de invitado")
         self.loadProperties()
-        self.sliderValue = ft.Text("0")
+        # self.sliderValue = ft.Text("0")
         self.currentRowToEdit = ""
         self.shareTable = ft.Row(
                             controls = [ft.DataTable(                                    
@@ -44,16 +42,6 @@ class Tab2(ft.Tab):
                             alignment=ft.MainAxisAlignment.CENTER, 
                         )
         self.__generateShareTableData__()
-        self.maxNumberShareResourcesSlider = ft.CupertinoSlider(
-                                                    divisions=5,
-                                                    max=100,
-                                                    active_color=ft.colors.PURPLE,
-                                                    thumb_color=ft.colors.PURPLE,
-                                                    on_change=self.handle_change,
-                                                    width=500,
-                                                    value=30
-                                                )
-        
         self.rowsSelected = 0
         self.content=ft.Column(
                     controls=[
@@ -90,12 +78,9 @@ class Tab2(ft.Tab):
                                         ft.Row(
                                             [
                                                 self.groupNameTextField,
-                                                ft.Column([
-                                                    self.sliderValue,
-                                                    self.maxNumberShareResourcesSlider
-                                                ])
+                                                self.maxNumberShareResourcesTF
                                             ],
-                                            alignment=ft.MainAxisAlignment.SPACE_BETWEEN
+                                            alignment=ft.MainAxisAlignment.SPACE_AROUND
                                         )
                                     ],
                                     horizontal_alignment = ft.CrossAxisAlignment.CENTER               
@@ -105,13 +90,27 @@ class Tab2(ft.Tab):
                         ) 
                     ], )  
     def loadProperties(self):
+        self.enableInvitedAccessCheckbox = ft.Checkbox(label="Permitir acceso de invitado", value=False)
         self.groupNameTextField = ft.TextField(label="Grupo permitido",width=400,value = "users")
-        if 'usershare allow guest' in config['global']:
-            self.enableSharedDirectoriesCheckbox = ft.TextField(label="Grupo permitido",width=400,value = optionsEnglishSpanish[config['global']['usershare allow guest']])
+        self.enableSharedDirectoriesCheckbox = ft.Checkbox(label="Permitir a los usuarios compartir sus directorios", on_change=self.enableOptionsShareDirectories)
+        self.maxNumberShareResourcesTF = ft.TextField(label="Numero maximo de recursos compartidos")
+        if config.has_option("global","usershare allow guests"):
+            if config['global']['usershare allow guests'] == "Yes":
+                self.enableSharedDirectoriesCheckbox.value = True
+                self.maxNumberShareResourcesTF.value = config["global"]["usershare max shares"]
+                self.enableInvitedAccessCheckbox.disabled = False
+                self.groupNameTextField.disabled = False
+                self.maxNumberShareResourcesTF.disabled= False
+            else:
+                self.enableSharedDirectoriesCheckbox.value = False
+                self.maxNumberShareResourcesTF.value = 100
+                self.enableInvitedAccessCheckbox.disabled = True
+                self.groupNameTextField.disabled = True
+                self.maxNumberShareResourcesTF.disabled = True
+
     def __generateShareTableData__(self):
         self.shareTable.controls[0].rows.clear()
         namesBaseList = config.sections()[1:]
-        # ["homes","users","printers","groups","print$","profiles"]
         for i in range(len(namesBaseList)):
             rowToInner = ft.DataRow()
             rowToInner.cells.append(ft.DataCell(ft.Text("Habilitado",color=ft.colors.LIGHT_GREEN_ACCENT_400)))
@@ -169,7 +168,7 @@ class Tab2(ft.Tab):
 
     def deleteSelectedItem(self,e):
         resourseName = self.currentRowToEdit[2].content.value
-        print("Recurso a eliminar",resourseName)   
+        #print("Recurso a eliminar",resourseName)   
         newAlert = AlertMessage(self.page,f"Eliminar Recurso: {resourseName}","warning","Si suprime el recurso compartido, se perderan todos sus ajustes.\n ¿Seguro de que desea suprimirlo?")
         newAlert.getNameMethodOnDismiss(self.updateChangesOnTable)
         self.page.dialog = newAlert
@@ -198,18 +197,14 @@ class Tab2(ft.Tab):
         if self.enableSharedDirectoriesCheckbox.value:
             self.enableInvitedAccessCheckbox.disabled = False
             self.groupNameTextField.disabled = False
-            self.maxNumberShareResourcesSlider.disabled= False
-            self.sliderValue.disabled = False
+            self.maxNumberShareResourcesTF.disabled= False
+            #self.sliderValue.disabled = False
         else:
             self.enableInvitedAccessCheckbox.disabled = True
             self.groupNameTextField.disabled = True
-            self.maxNumberShareResourcesSlider.disabled = True
-            self.sliderValue.disabled = True
+            self.maxNumberShareResourcesTF.disabled = True
+            #self.sliderValue.disabled = True
         self.update()    
-
-    def handle_change(self,e):
-        self.sliderValue.value = str(e.control.value)
-        self.update()
 
     def enableBtnsControls(self,e):
         if not e.control.selected:

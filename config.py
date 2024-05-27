@@ -1,4 +1,5 @@
 import configparser
+#import sh
 
 optionsEnglishSpanish = {
             "Yes":True,
@@ -15,8 +16,13 @@ optionsEnglishSpanish = {
             False:"No"
         }
 
+# with sh.contrib.sudo(password="1234asdf", _with=True):
+#     print(ls("/root"))
 config = configparser.ConfigParser()
 config.read('smb.conf')
+
+
+
 # print(config.sections())
 
 # config = {

@@ -5,7 +5,7 @@ from views.view3 import Tab3
 from views.view4 import Tab4
 from views.components import MessageBanner
 from config import config
-import subprocess as sp
+import sh
 
 def main(page: ft.Page):
     page.title = "Panel de Control SAMBA SERVER"
@@ -24,10 +24,32 @@ def main(page: ft.Page):
                 config.write(configfile)
             page.banner.showSucessfulMessage("Datos guardados satisfactoriamente")
             page.update()
-        except Exception as e:
+        except PermissionError as e:
             page.banner.showErrorMessage("ERROR al guardar los cambios")
             print("No se pudo guardar el archivo:",e)
             page.update()
+
+        # Usar sudo para mover el archivo temporal a su ubicación final
+        try:
+            sh.sudo.mv("smb.conf", "/etc/samba/smb.conf")
+            print("Configuration changes saved successfully.")
+        except sh.ErrorReturnCode as e:
+            print(f"Error saving configuration with sudo: {e}")
+
+        # Verificar la configuración de Samba
+        try:
+            sh.sudo.testparm('-s')
+            print("Samba configuration is valid.")
+        except sh.ErrorReturnCode as e:
+            print(f"Error verifying Samba configuration: {e}")
+
+        # Reiniciar el servicio de Samba
+        try:
+            sh.sudo.systemctl('restart', 'smb')
+            print("Samba service restarted successfully.")
+        except sh.ErrorReturnCode as e:
+            print(f"Error restarting Samba service: {e}")
+
 
     tabsToRender = ft.Tabs(
         selected_index=1,

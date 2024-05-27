@@ -20,9 +20,9 @@ def main(page: ft.Page):
     def saveGeneralChanges(e):
         print("Cambios generales realizados")
         try:
-            with sh.contrib.sudo(password="1234asdf", _with=True):
-                with open('smb.conf', 'w') as configfile:
-                    config.write(configfile)
+            sh.sudo.chmod("777","smb.conf")
+            with open("smb.conf", 'w') as configfile:
+                config.write(configfile)
             page.banner.showSucessfulMessage("Datos guardados satisfactoriamente")
             page.update()
         except PermissionError as e:

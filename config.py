@@ -1,5 +1,5 @@
 import configparser
-#import sh
+import sh
 
 optionsEnglishSpanish = {
             "Yes":True,
@@ -16,8 +16,12 @@ optionsEnglishSpanish = {
             False:"No"
         }
 
-# with sh.contrib.sudo(password="1234asdf", _with=True):
-#     print(ls("/root"))
+try:
+    sh.sudo.cp("/etc/samba/smb.conf","smb.conf")
+    print("Copia de archivo smb.conf, realizada exitosamente")
+except sh.ErrorReturnCode as e:
+    print(f"No se pudo relizar la copia: {e}")
+
 config = configparser.ConfigParser()
 config.read('smb.conf')
 

@@ -11,45 +11,45 @@ def main(page: ft.Page):
     page.title = "Panel de Control SAMBA SERVER"
     page.vertical_alignment = ft.MainAxisAlignment.CENTER
     page.adaptive = False
-    page.window_resizable = False
+    page.window_resizable = True
     page.auto_scroll = True
-    page.window_width = 1300
-    page.window_height = 850
+    # page.window_width = 1300
+    # page.window_height = 850
     page.banner = MessageBanner(pageIn=page)
 
     def saveGeneralChanges(e):
-        print("Cambios generales realizados")
+        # print("Cambios generales realizados")
         try:
-            sh.sudo.chmod("777","smb.conf")
+        #     sh.sudo.chmod("777","smb.conf")
             with open("smb.conf", 'w') as configfile:
                 config.write(configfile)
             page.banner.showSucessfulMessage("Datos guardados satisfactoriamente")
             page.update()
         except PermissionError as e:
-            page.banner.showErrorMessage("ERROR al guardar los cambios")
+            page.banner.showErrorMessage("Error al guardar los cambios")
             print("No se pudo guardar el archivo:",e)
             page.update()
 
         # # Usar sudo para mover el archivo temporal a su ubicación final
         try:
             sh.sudo.cp("smb.conf", "/etc/samba/smb.conf")
-            print("Configuration changes saved successfully.")
+            print("Copia de archivo de configuracion exitosa.")
         except sh.ErrorReturnCode as e:
-            print(f"Error saving configuration with sudo: {e}")
+            print(f"Error copiando el archivo de configuracion: {e}")
 
         # Verificar la configuración de Samba
         try:
             sh.sudo.testparm('-s')
-            print("Samba configuration is valid.")
+            print("La configuracion Samba es valida.")
         except sh.ErrorReturnCode as e:
-            print(f"Error verifying Samba configuration: {e}")
+            print(f"Error verificando la configuracion Samba: {e}")
 
         # Reiniciar el servicio de Samba
         try:
             sh.sudo.systemctl('restart', 'smb')
-            print("Samba service restarted successfully.")
+            print("Servidor SAMBA reiniciado exitosamente.")
         except sh.ErrorReturnCode as e:
-            print(f"Error restarting Samba service: {e}")
+            print(f"Error reiniciando el servidor Samba: {e}")
 
 
     tabsToRender = ft.Tabs(

@@ -319,6 +319,42 @@ class FilePickerElement(ft.Row):
     # def enableSaveBtn(self,e):
     #     self.saveBtn.disabled = False
     #     self.page.update()    
+
+class BottonDialogElement(ft.BottomSheet):
+    def __init__(self,pageIn,title,elements):
+        super().__init__()
+        self.page = pageIn
+        self.disabled = False
+        self.visible = True
+        self.elements = elements
+        self.content = ft.Container(
+                                        ft.Column(
+                                            [
+                                                ft.Text(str(title)),
+                                                ft.ElevatedButton("Close bottom sheet",on_click=self.cancelDialog)
+                                            ],
+                                            tight=True,
+                                        ),
+                                        padding=10,
+                                    )
+        self.open=True
+        self.on_dismiss=self.onDismissed
+        # lambda e: print("Modal dialog dismissed!")
+    
+    def cancelDialog(self,e):
+        print("Datos cancelados")  
+
+    def onDismissed(self,e):
+        print("Dismissed!")
+
+    # def openDialog(self,e):
+    #     self.newProperty.open = True
+    #     self.newProperty.update()
+
+    def closeDialog(self,e):
+        self.open = False
+        self.page.update()      
+    
                                           
                                         
    

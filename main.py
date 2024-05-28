@@ -30,26 +30,26 @@ def main(page: ft.Page):
             print("No se pudo guardar el archivo:",e)
             page.update()
 
-        # # Usar sudo para mover el archivo temporal a su ubicación final
-        try:
-            sh.sudo.cp("smb.conf", "/etc/samba/smb.conf")
-            print("Copia de archivo de configuracion exitosa.")
-        except sh.ErrorReturnCode as e:
-            print(f"Error copiando el archivo de configuracion: {e}")
+        # # # Usar sudo para mover el archivo temporal a su ubicación final
+        # try:
+        #     sh.sudo.cp("smb.conf", "/etc/samba/smb.conf")
+        #     print("Copia de archivo de configuracion exitosa.")
+        # except sh.ErrorReturnCode as e:
+        #     print(f"Error copiando el archivo de configuracion: {e}")
 
-        # Verificar la configuración de Samba
-        try:
-            sh.sudo.testparm('-s')
-            print("La configuracion Samba es valida.")
-        except sh.ErrorReturnCode as e:
-            print(f"Error verificando la configuracion Samba: {e}")
+        # # Verificar la configuración de Samba
+        # try:
+        #     sh.sudo.testparm('-s')
+        #     print("La configuracion Samba es valida.")
+        # except sh.ErrorReturnCode as e:
+        #     print(f"Error verificando la configuracion Samba: {e}")
 
-        # Reiniciar el servicio de Samba
-        try:
-            sh.sudo.systemctl('restart', 'smb')
-            print("Servidor SAMBA reiniciado exitosamente.")
-        except sh.ErrorReturnCode as e:
-            print(f"Error reiniciando el servidor Samba: {e}")
+        # # Reiniciar el servicio de Samba
+        # try:
+        #     sh.sudo.systemctl('restart', 'smb')
+        #     print("Servidor SAMBA reiniciado exitosamente.")
+        # except sh.ErrorReturnCode as e:
+        #     print(f"Error reiniciando el servidor Samba: {e}")
 
 
     tabsToRender = ft.Tabs(

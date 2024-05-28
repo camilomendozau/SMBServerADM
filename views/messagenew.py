@@ -1,6 +1,6 @@
 import flet as ft
 from config import config,optionsEnglishSpanish
-from views.components import MaskElement,FieldTextEdit,CheckboxElement,FilePickerElement
+from views.components import MaskElement,FieldTextEdit,CheckboxElement,FilePickerElement,BottonDialogElement
 
 class AlertNewResourse(ft.AlertDialog):
     def __init__(self,pageActual):
@@ -207,7 +207,9 @@ class AlertEditResourse(ft.AlertDialog):
                                         icon_color="blue400",
                                         icon_size=40,
                                         tooltip="Añadir nueva propiedad",
+                                        on_click=self.createNewProperty
                                     )
+        
         self.content=ft.Column(
             controls=[
                 ft.Card(
@@ -229,6 +231,7 @@ class AlertEditResourse(ft.AlertDialog):
 
     def getNameMethodOnDismiss(self,methodName):
         self.on_dismiss = methodName
+
         
     def loadProperties(self):
         for property in list(config[self.resourceName].keys()):
@@ -278,3 +281,10 @@ class AlertEditResourse(ft.AlertDialog):
                 print("Error al guardar propiedades:",error)            
         self.open = False
         self.page.update()  
+
+    def createNewProperty(self,e):
+        newPropertyDialog = BottonDialogElement(self.page,"Elige la propiedad a insertar","")
+        #self.page.dialog = newPropertyDialog    
+        # newPropertyDialog.open = True
+        self.page.overlay.append(newPropertyDialog)
+        self.page.update()

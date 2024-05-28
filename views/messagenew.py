@@ -1,6 +1,6 @@
 import flet as ft
 from config import config,optionsEnglishSpanish
-from views.components import MaskElement,FieldTextEdit,CheckboxElement,FilePickerElement,BottonDialogElement
+from views.components import MaskElement,FieldTextEdit,CheckboxElement,FilePickerElement,BottomDialogElement
 
 class AlertNewResourse(ft.AlertDialog):
     def __init__(self,pageActual):
@@ -93,7 +93,6 @@ class AlertNewResourse(ft.AlertDialog):
         self.page.update()
 
     def saveDialog(self,e):
-        print(self.typeResourseRadioGroup.value)
         if self.resourseNameTF.value == "":
             self.__textFieldEmpty__(self.resourseNameTF)
         elif self.descriptionTF.value == "":
@@ -195,10 +194,14 @@ class AlertEditResourse(ft.AlertDialog):
         self.page = pageActual
         self.resourceName = dataToEdit
         self.modal=True
+        self.resourceNameElement = FieldTextEdit(self.resourceName,"",onClickIconBtnMethodName=None)
+        self.resourceNameElement.setTextFieldWidth(200)
         self.title=ft.Row(
             [
                 ft.Text("Editar recurso compartido: ", color=ft.colors.BLACK),
-                ft.Text(self.resourceName, color=ft.colors.BLUE_500)
+                self.resourceNameElement
+                # ft.Text(self.resourceName, color=ft.colors.BLUE_500)
+                
             ])
         self.cancelBtn = ft.ElevatedButton(text="Cancelar",on_click=self.cancelDialog, icon=ft.icons.CANCEL, color=ft.colors.RED_400)
         self.saveBtn = ft.ElevatedButton(text="Guardar",on_click=self.saveDialog, icon=ft.icons.SAVE, color=ft.colors.GREEN_600)
@@ -207,7 +210,7 @@ class AlertEditResourse(ft.AlertDialog):
                                         icon_color="blue400",
                                         icon_size=40,
                                         tooltip="Añadir nueva propiedad",
-                                        on_click=self.createNewProperty
+                                        on_click=self.openDialogToCreateNewProperty
                                     )
         
         self.content=ft.Column(
@@ -228,6 +231,7 @@ class AlertEditResourse(ft.AlertDialog):
         self.loadProperties()
         self.actions=[self.cancelBtn,self.saveBtn]
         self.actions_alignment="end"
+        self.propertiesList = ["Crear Mascara","Mascara de Carpeta"]
 
     def getNameMethodOnDismiss(self,methodName):
         self.on_dismiss = methodName
@@ -261,6 +265,7 @@ class AlertEditResourse(ft.AlertDialog):
         self.page.update()
 
     def saveDialog(self,e):
+        #if self.resourceNameElement.getValue() != self.
         resourseElementsShowing = self.content.controls[0].content.content.controls
         for propertyElement in resourseElementsShowing:
             #print(self.optionsEnglishSpanish[propertyElement.getLabel()] ,propertyElement.getValue())
@@ -282,9 +287,14 @@ class AlertEditResourse(ft.AlertDialog):
         self.open = False
         self.page.update()  
 
-    def createNewProperty(self,e):
-        newPropertyDialog = BottonDialogElement(self.page,"Elige la propiedad a insertar","")
-        #self.page.dialog = newPropertyDialog    
-        # newPropertyDialog.open = True
-        self.page.overlay.append(newPropertyDialog)
+    def insertNewProperty(self,e):
+        propertyElementToInner = self.content.controls[0].content.content.controls
+        propertyElementToInner.append(MaskElement(labelFieldText=self.newPropertyDialog.propertySelected,textFielValueIn="0000"))
+        self.newPropertyDialog.open = False
+        self.page.update()
+
+    def openDialogToCreateNewProperty(self,e):
+        self.newPropertyDialog = BottomDialogElement(self.page,"Elige la propiedad a insertar",self.propertiesList,self.resourceName)
+        self.newPropertyDialog.setMethodOnClickAddBtn(self.insertNewProperty)
+        self.page.overlay.append(self.newPropertyDialog)
         self.page.update()

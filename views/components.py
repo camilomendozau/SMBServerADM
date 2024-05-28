@@ -1,5 +1,5 @@
 import flet as ft
-import time
+from config import config,optionsEnglishSpanish
 class EditMask(ft.Row):
     def __init__(self,onClickSaveBtnMethodName):
         super().__init__()
@@ -157,6 +157,8 @@ class FieldTextEdit(ft.Row):
         self.page.update()
     def setTextFieldValue(self,value):
         self.textField.value = value
+    def setTextFieldWidth(self,width):
+        self.textField.width = int(width)
 
         
 class MaskElement(ft.Row):
@@ -320,40 +322,57 @@ class FilePickerElement(ft.Row):
     #     self.saveBtn.disabled = False
     #     self.page.update()    
 
-class BottonDialogElement(ft.BottomSheet):
-    def __init__(self,pageIn,title,elements):
+class BottomDialogElement(ft.BottomSheet):
+    def __init__(self,pageIn,title,elements,resourseName):
         super().__init__()
         self.page = pageIn
-        self.disabled = False
-        self.visible = True
-        self.elements = elements
+        self.resourseName = resourseName
+        self.propertiesList = elements
         self.content = ft.Container(
                                         ft.Column(
                                             [
                                                 ft.Text(str(title)),
-                                                ft.ElevatedButton("Close bottom sheet",on_click=self.cancelDialog)
+                                                ft.Dropdown(
+                                                    width=300,
+                                                    options=[],
+                                                    on_change=self.onChangeDropdown
+                                                    #  ft.dropdown.Option("Red"),
+                                                    #     ft.dropdown.Option("Green"),
+                                                    #     ft.dropdown.Option("Blue")
+                                                ),
+                                                ft.Row(
+                                                    [
+                                                        ft.ElevatedButton("Cancelar", on_click=self.cancelDialog,color = ft.colors.RED_300,icon=ft.icons.CANCEL),
+                                                        ft.ElevatedButton("Insertar", on_click=self.setMethodOnClickAddBtn,color=ft.colors.GREEN_300,icon=ft.icons.ADD),
+                                                    ]
+                                                ),
+                                                # ft.ElevatedButton("Close bottom sheet",on_click=self.cancelDialog)
                                             ],
                                             tight=True,
+                                            horizontal_alignment=ft.CrossAxisAlignment.CENTER
                                         ),
                                         padding=10,
                                     )
+        self.loadProperties()
+        self.propertySelected = ""
         self.open=True
-        self.on_dismiss=self.onDismissed
+
         # lambda e: print("Modal dialog dismissed!")
+    def loadProperties(self):
+        for property in self.propertiesList:
+            if not config.has_option(self.resourseName,optionsEnglishSpanish[property]):
+                self.content.content.controls[1].options.append(ft.dropdown.Option(property))
     
+    def onChangeDropdown(self,e):
+        self.propertySelected = self.content.content.controls[1].value
+        print(self.propertySelected)
+
     def cancelDialog(self,e):
-        print("Datos cancelados")  
-
-    def onDismissed(self,e):
-        print("Dismissed!")
-
-    # def openDialog(self,e):
-    #     self.newProperty.open = True
-    #     self.newProperty.update()
-
-    def closeDialog(self,e):
         self.open = False
-        self.page.update()      
+        self.page.update()
+
+    def setMethodOnClickAddBtn(self,methodName):
+        self.content.content.controls[2].controls[1].on_click = methodName    
     
                                           
                                         

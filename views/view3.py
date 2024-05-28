@@ -99,3 +99,12 @@ class Tab3(ft.Tab):
         else:
             self.nameWinsServer.disabled = True    
         self.page.update()    
+
+    def saveGeneralChanges(self):
+        if self.winsRadioGroup.value == '0':
+            config['global']['wins support'] = "Yes"
+            if config.has_option('global','wins server'):
+                config.remove_option('global','wins server')
+        if self.winsRadioGroup.value == '1':
+            config['global']['wins support'] = "No"   
+            config.set('global','wins server',str(self.nameWinsServer.value)) 

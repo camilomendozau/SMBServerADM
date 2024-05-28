@@ -313,14 +313,6 @@ class FilePickerElement(ft.Row):
     def invisible(self):
         self.visible = False
         self.page.update()    
-    
-    # def setonchange(self,nameMethodOnChange):
-    #     self.selectedFolderTF.on_change = nameMethodOnChange
-    #     self.page.update()
-
-    # def enableSaveBtn(self,e):
-    #     self.saveBtn.disabled = False
-    #     self.page.update()    
 
 class BottomDialogElement(ft.BottomSheet):
     def __init__(self,pageIn,title,elements,resourseName):

@@ -259,7 +259,7 @@ class Tab2(ft.Tab):
                 self.addBtn.disabled = True
                 self.editBtn.disabled = True
                 self.deleteBtn.disabled = True
-                self.update()
+                self.update()           
 
             
             

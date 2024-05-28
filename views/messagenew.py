@@ -265,27 +265,41 @@ class AlertEditResourse(ft.AlertDialog):
         self.page.update()
 
     def saveDialog(self,e):
-        #if self.resourceNameElement.getValue() != self.
         resourseElementsShowing = self.content.controls[0].content.content.controls
-        for propertyElement in resourseElementsShowing:
-            #print(self.optionsEnglishSpanish[propertyElement.getLabel()] ,propertyElement.getValue())
-            try:
-                if optionsEnglishSpanish[propertyElement.getLabel()] in config[self.resourceName]:
-                    #print("guardar valor existente:",self.resourceName,self.optionsEnglishSpanish[propertyElement.getLabel()],propertyElement.getValue(),sep='-')
-                    if isinstance(propertyElement.getValue(),bool):
-                        config[self.resourceName][optionsEnglishSpanish[propertyElement.getLabel()]] = optionsEnglishSpanish[propertyElement.getValue()]
+        if self.resourceNameElement.getValue() == self.resourceName:
+            for propertyElement in resourseElementsShowing:
+                #print(self.optionsEnglishSpanish[propertyElement.getLabel()] ,propertyElement.getValue())
+                try:
+                    if optionsEnglishSpanish[propertyElement.getLabel()] in config[self.resourceName]:
+                        #print("guardar valor existente:",self.resourceName,self.optionsEnglishSpanish[propertyElement.getLabel()],propertyElement.getValue(),sep='-')
+                        if isinstance(propertyElement.getValue(),bool):
+                            config[self.resourceName][optionsEnglishSpanish[propertyElement.getLabel()]] = optionsEnglishSpanish[propertyElement.getValue()]
+                        else:
+                            config.set(self.resourceName,optionsEnglishSpanish[propertyElement.getLabel()],propertyElement.getValue())
                     else:
-                        config.set(self.resourceName,optionsEnglishSpanish[propertyElement.getLabel()],propertyElement.getValue())
-                else:
+                        #print("guardar nueva propiedad:",self.resourceName,self.optionsEnglishSpanish[propertyElement.getLabel()],propertyElement.getValue(),sep="-")
+                        if isinstance(propertyElement.getValue(),bool):
+                            config.set(self.resourceName,optionsEnglishSpanish[propertyElement.getLabel()],optionsEnglishSpanish[propertyElement.getValue()])
+                        else:
+                            config.set(self.resourceName,optionsEnglishSpanish[propertyElement.getLabel()],propertyElement.getValue())
+                except Exception as error:
+                    print("Error al guardar propiedades editadas:",error)     
+        else:
+            oldName = self.resourceName
+            self.resourceName = self.resourceNameElement.getValue()
+            config.add_section(self.resourceName)
+            for propertyElement in resourseElementsShowing:
+                try:
                     #print("guardar nueva propiedad:",self.resourceName,self.optionsEnglishSpanish[propertyElement.getLabel()],propertyElement.getValue(),sep="-")
                     if isinstance(propertyElement.getValue(),bool):
                         config.set(self.resourceName,optionsEnglishSpanish[propertyElement.getLabel()],optionsEnglishSpanish[propertyElement.getValue()])
                     else:
                         config.set(self.resourceName,optionsEnglishSpanish[propertyElement.getLabel()],propertyElement.getValue())
-            except Exception as error:
-                print("Error al guardar propiedades:",error)            
+                except Exception as error:
+                    print("Error al guardar nuevo nombre:",error)
+            config.remove_section(oldName)        
         self.open = False
-        self.page.update()  
+        self.page.update()    
 
     def insertNewProperty(self,e):
         propertyElementToInner = self.content.controls[0].content.content.controls

@@ -19,6 +19,7 @@ def main(page: ft.Page):
 
     def saveGeneralChanges(e):
         # print("Cambios generales realizados")
+        tabsToRender.tabs[2].saveGeneralChanges()
         try:
         #     sh.sudo.chmod("777","smb.conf")
             with open("smb.conf", 'w') as configfile:

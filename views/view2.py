@@ -263,13 +263,17 @@ class Tab2(ft.Tab):
                 self.update()     
 
     def saveGeneralChanges(self):
-        if self.winsRadioGroup.value == '0':
-            config['global']['wins support'] = "Yes"
-            if config.has_option('global','wins server'):
-                config.remove_option('global','wins server')
-        if self.winsRadioGroup.value == '1':
-            config['global']['wins support'] = "No"   
-            config.set('global','wins server',str(self.nameWinsServer.value))                   
+        if self.enableSharedDirectoriesCheckbox.value == True:
+            if self.maxNumberShareResourcesTF.value == "":
+                self.maxNumberShareResourcesTF.value = "1"
+            config.set('global','usershare max shares',str(self.maxNumberShareResourcesTF.value))
+            if self.enableInvitedAccessCheckbox.value == True:
+                config.set('global','usershare allow guests','Yes')      
+        if self.enableSharedDirectoriesCheckbox.value == False:
+            if config.has_option('global','usershare max shares'):
+                config.remove_option('global','usershare max shares')  
+            config['global']['usershare allow guests'] = "No"
+
 
             
             

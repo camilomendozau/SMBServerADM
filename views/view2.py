@@ -99,6 +99,7 @@ class Tab2(ft.Tab):
                 self.enableSharedDirectoriesCheckbox.value = True
                 self.maxNumberShareResourcesTF.value = config["global"]["usershare max shares"]
                 self.enableInvitedAccessCheckbox.disabled = False
+                self.enableInvitedAccessCheckbox.value = True
                 self.groupNameTextField.disabled = False
                 self.maxNumberShareResourcesTF.disabled= False
             else:
@@ -259,7 +260,16 @@ class Tab2(ft.Tab):
                 self.addBtn.disabled = True
                 self.editBtn.disabled = True
                 self.deleteBtn.disabled = True
-                self.update()           
+                self.update()     
+
+    def saveGeneralChanges(self):
+        if self.winsRadioGroup.value == '0':
+            config['global']['wins support'] = "Yes"
+            if config.has_option('global','wins server'):
+                config.remove_option('global','wins server')
+        if self.winsRadioGroup.value == '1':
+            config['global']['wins support'] = "No"   
+            config.set('global','wins server',str(self.nameWinsServer.value))                   
 
             
             

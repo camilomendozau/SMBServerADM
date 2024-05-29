@@ -5,7 +5,7 @@ from views.view3 import Tab3
 from views.view4 import Tab4
 from views.components import MessageBanner
 from config import config
-import sh
+# import sh
 
 def main(page: ft.Page):
     page.title = "Panel de Control SAMBA SERVER"
@@ -21,7 +21,7 @@ def main(page: ft.Page):
         # print("Cambios generales realizados")
         tabsToRender.tabs[2].saveGeneralChanges()
         try:
-            sh.sudo.chmod("777","smb.conf")
+            # sh.sudo.chmod("777","smb.conf")
             with open("smb.conf", 'w') as configfile:
                 config.write(configfile)
             page.banner.showSucessfulMessage("Datos guardados satisfactoriamente")

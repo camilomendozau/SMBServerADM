@@ -7,6 +7,7 @@ class Tab3(ft.Tab):
         self.text="Identidad"
         self.icon=ft.icons.SUPERVISED_USER_CIRCLE_OUTLINED 
         self.page = pageIn
+        self.workgroupNameTF = ft.TextField(label="Nombre de grupo de trabajo o dominio",value=config['global']['workgroup'])
         self.winsRadioGroup = ft.RadioGroup(content=ft.Column([
                                                     ft.Radio(value="0", label="Compatibilidad con servidor WINS"),
                                                     ft.Radio(value="1", label="Servidor WINS remoto"),
@@ -30,7 +31,7 @@ class Tab3(ft.Tab):
                                     content = ft.Column(
                                         controls = [
                                             ft.Text("Configuracion basica"),
-                                                    ft.TextField(label="Nombre de grupo de trabajo o dominio",value=config['global']['workgroup']),
+                                                    self.workgroupNameTF,
                                                     ft.Dropdown(
                                                         label="Controlador de dominio",
                                                         options=[
@@ -101,6 +102,7 @@ class Tab3(ft.Tab):
         self.page.update()    
 
     def saveGeneralChanges(self):
+        config['global']['workgroup'] = str(self.workgroupNameTF.value)
         if self.winsRadioGroup.value == '0':
             config['global']['wins support'] = "Yes"
             if config.has_option('global','wins server'):
